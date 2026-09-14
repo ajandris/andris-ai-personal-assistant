@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# custom ignores
+.vscode/
+.agents/
+
+# Project ignores (Stage 3 specification)
+.venv/
+.env
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/qdrant/

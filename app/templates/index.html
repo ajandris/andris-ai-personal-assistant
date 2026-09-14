@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Персональный сайт и портфолио Андриса Янчевскиса — разработчика Python, системного аналитика и создателя AI-ассистентов.">
+  <title>{{ settings.app_name }}</title>
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+
+  <!-- Шапка и навигация -->
+  <header class="site-header" id="top">
+    <div class="container header-container">
+      <a href="#top" class="brand" aria-label="Андрис Янчевскис — на главную">
+        <span class="brand-avatar" aria-hidden="true">АЯ</span>
+        <span class="brand-text">
+          <span class="brand-name">Андрис Янчевскис</span>
+          <span class="brand-role">Python / AI / Аналитика</span>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Открыть главное меню">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+
+      <nav class="site-nav" id="primary-navigation" aria-label="Основная навигация">
+        <ul class="nav-list">
+          <li><a href="#about" class="nav-link">Обо мне</a></li>
+          <li><a href="#experience" class="nav-link">Опыт</a></li>
+          <li><a href="#skills" class="nav-link">Навыки</a></li>
+          <li><a href="#education" class="nav-link">Обучение</a></li>
+          <li><a href="#portfolio" class="nav-link">Портфолио</a></li>
+          <li><a href="#services" class="nav-link">Чем могу помочь</a></li>
+          <li><a href="#contact" class="nav-link">Контакты</a></li>
+        </ul>
+        <a href="#ai-assistant" class="btn btn-header-ai">
+          <span class="ai-sparkle" aria-hidden="true">✦</span>
+          <span>Задать вопрос AI-ассистенту</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <!-- Главный экран (Hero) -->
+    <section class="hero-section" id="hero">
+      <div class="container hero-container">
+        <div class="hero-badge">
+          <span class="status-indicator"></span>
+          <span>Дипломный проект по разработке AI-агентов</span>
+        </div>
+        <h1 class="hero-title">
+          Андрис Янчевскис
+          <span class="hero-subtitle">Профессиональный профиль и портфолио компетенций</span>
+        </h1>
+        <p class="hero-description">
+          Специалист с подтверждённым опытом в области системного и бизнес-анализа, баз данных,
+          программирования на Python и проектирования AI-ассистентов.
+          Профиль ориентирован на практическое решение прикладных инженерных задач.
+        </p>
+        <div class="hero-actions">
+          <a href="#portfolio" class="btn btn-primary">Посмотреть портфолио</a>
+          <a href="#ai-assistant" class="btn btn-secondary">
+            <span class="ai-sparkle" aria-hidden="true">✦</span>
+            Задать вопрос AI-ассистенту
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Обо мне -->
+    <section class="section about-section" id="about">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Профиль</span>
+          <h2 class="section-title">Обо мне</h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-card about-summary">
+            <h3 class="card-title">Сочетание аналитики, инженерии и AI</h3>
+            <p>
+              Мой профессиональный фундамент формировался на стыке классического IT-анализа,
+              разработки программного обеспечения и управления процессами. Я объединяю глубокое
+              понимание данных, архитектурный подход к системам и современные технологии
+              создания автономных агентов.
+            </p>
+            <p>
+              Сайт спроектирован для честного и прозрачного подтверждения квалификаций: здесь представлены
+              только верифицированные факты, реальные проекты и актуальные академические программы.
+            </p>
+          </div>
+          <div class="about-card about-domains">
+            <h3 class="card-title">Ключевые сферы компетенций</h3>
+            <ul class="domain-list">
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">⚙</span>
+                <span>IT и программная разработка</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">📊</span>
+                <span>Бизнес- и системный анализ</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">🗄</span>
+                <span>Реляционные базы данных и SQL</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">📋</span>
+                <span>Управление проектами</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">🌐</span>
+                <span>Современная веб-разработка</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">🤖</span>
+                <span>AI/ML и разработка AI-ассистентов</span>
+              </li>
+              <li class="domain-item">
+                <span class="domain-icon" aria-hidden="true">📦</span>
+                <span>Операционные и складские процессы</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Опыт работы -->
+    <section class="section experience-section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Хронология</span>
+          <h2 class="section-title">Опыт работы</h2>
+          <p class="section-description">Подтверждённые периоды практической профессиональной деятельности</p>
+        </div>
+
+        <div class="timeline">
+          <!-- Период 1 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">2013 — настоящее время</span>
+                <span class="badge badge-active">Текущая деятельность</span>
+              </div>
+              <h3 class="timeline-title">Boots Alliance Burton Service Centre</h3>
+              <p class="timeline-role">Операционная работа и координация процессов</p>
+              <p class="timeline-desc">
+                Участие в ключевых операционных потоках крупного логистического центра: DotCom, Inbound, Inventory и Despatch.
+                Практический опыт организации цепочек поставок, инвентаризации и обработки заказов.
+              </p>
+              <div class="timeline-neutral">
+                <span class="neutral-note">Дополнительные сведения о проектах подразделений будут добавлены</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Период 2 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">2011 — 2013</span>
+                <span class="badge badge-completed">Завершено</span>
+              </div>
+              <h3 class="timeline-title">Самозанятость в сфере строительства</h3>
+              <p class="timeline-role">Руководство командой и организация работ</p>
+              <p class="timeline-desc">
+                Управление рабочим коллективом, планирование производственных задач, координация выполнения работ
+                и соблюдение стандартов качества и сроков.
+              </p>
+            </div>
+          </article>
+
+          <!-- Период 3 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">1995 — 2011</span>
+                <span class="badge badge-completed">Завершено</span>
+              </div>
+              <h3 class="timeline-title">IT-сектор (Латвия)</h3>
+              <p class="timeline-role">Системный анализ, программирование, управление проектами и Business Intelligence</p>
+              <p class="timeline-desc">
+                Комплексная работа над информационными системами: обследование бизнес-требований, проектирование архитектурных
+                решений, разработка программных модулей, построение аналитических отчетов и сопровождение корпоративных систем.
+              </p>
+              <div class="timeline-neutral">
+                <span class="neutral-note">Архивные материалы и детальная хронология проектов подготавливаются к публикации</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Навыки -->
+    <section class="section skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Компетенции</span>
+          <h2 class="section-title">Навыки</h2>
+          <p class="section-description">Подтверждённые практические и теоретические технологии и методологии без искусственных рейтингов</p>
+        </div>
+
+        <div class="skills-grid">
+          <!-- Группа 1: Бэкенд и языки -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Языки и бэкенд</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">Python</li>
+              <li class="skill-pill">FastAPI</li>
+              <li class="skill-pill">Django</li>
+            </ul>
+          </div>
+
+          <!-- Группа 2: Базы данных и SQL -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Базы данных и хранение</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">SQL</li>
+              <li class="skill-pill">PostgreSQL</li>
+              <li class="skill-pill">Oracle</li>
+              <li class="skill-pill">MySQL</li>
+            </ul>
+          </div>
+
+          <!-- Группа 3: Фронтенд -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Веб-разработка</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">HTML</li>
+              <li class="skill-pill">CSS</li>
+              <li class="skill-pill">JavaScript</li>
+            </ul>
+          </div>
+
+          <!-- Группа 4: AI и векторный поиск -->
+          <div class="skill-category-card">
+            <h3 class="category-title">AI и прикладные технологии</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">LLM</li>
+              <li class="skill-pill">embeddings</li>
+            </ul>
+          </div>
+
+          <!-- Группа 5: Аналитика и управление -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Аналитика и процессы</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">системный анализ</li>
+              <li class="skill-pill">бизнес-анализ</li>
+              <li class="skill-pill">управление проектами</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Образование и обучение -->
+    <section class="section education-section" id="education">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Квалификация</span>
+          <h2 class="section-title">Образование и обучение</h2>
+          <p class="section-description">Подтверждённые академические дипломы, профессиональные сертификации и актуальные программы</p>
+        </div>
+
+        <div class="education-grid">
+          <!-- В процессе: Vibe Coder -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">Vibe Coder</h3>
+            <p class="edu-institution">univerus.ai</p>
+            <p class="edu-desc">Современные подходы к разработке ПО с использованием передового AI-инструментария.</p>
+          </div>
+
+          <!-- В процессе: AI/ML Developer -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">AI/ML Developer</h3>
+            <p class="edu-institution">AI Institute</p>
+            <p class="edu-desc">Изучение алгоритмов машинного обучения, обработки данных и архитектур нейросетей.</p>
+          </div>
+
+          <!-- В процессе: AI Agents Developer -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">AI Agents Developer</h3>
+            <p class="edu-institution">AI Institute</p>
+            <p class="edu-desc">Проектирование автономных AI-агентов, RAG-систем, цепочек рассуждений и инструментов взаимодействия.</p>
+          </div>
+
+          <!-- Завершено: Google AI Professional -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2026</span>
+            </div>
+            <h3 class="edu-title">Google AI Professional</h3>
+            <p class="edu-institution">Coursera</p>
+            <p class="edu-desc">Профессиональная сертификация в области концепций и внедрения технологий искусственного интеллекта.</p>
+          </div>
+
+          <!-- Завершено: Level 5 Diploma in Web Application Development -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2026</span>
+            </div>
+            <h3 class="edu-title">Level 5 Diploma in Web Application Development</h3>
+            <p class="edu-institution">Code Institute</p>
+            <p class="edu-desc">Комплексная разработка масштабируемых веб-приложений полного цикла.</p>
+          </div>
+
+          <!-- Завершено: Postgraduate Diploma in Computer Science with Big Data Analytics -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2023</span>
+            </div>
+            <h3 class="edu-title">Postgraduate Diploma in Computer Science with Big Data Analytics</h3>
+            <p class="edu-institution">Wrexham Glyndwr University</p>
+            <p class="edu-desc">Последипломное образование в области компьютерных наук и аналитики больших объемов данных.</p>
+          </div>
+
+          <!-- Завершено: BSc (Hons) Computing and IT (Software) -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2019</span>
+            </div>
+            <h3 class="edu-title">BSc (Hons) Computing and IT (Software)</h3>
+            <p class="edu-institution">The Open University</p>
+            <p class="edu-desc">Степень бакалавра с отличием по направлению «Вычислительные системы и информационные технологии (ПО)».</p>
+          </div>
+
+          <!-- Завершено: Principles of Warehousing and Storage -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2019</span>
+            </div>
+            <h3 class="edu-title">Principles of Warehousing and Storage</h3>
+            <p class="edu-institution">NCFE Level 2</p>
+            <p class="edu-desc">Основы организации складского учета, хранения и безопасности логистических операций.</p>
+          </div>
+
+          <!-- Завершено: Team Leading -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2016</span>
+            </div>
+            <h3 class="edu-title">Team Leading</h3>
+            <p class="edu-institution">NCFE Level 2</p>
+            <p class="edu-desc">Принципы эффективного руководства командой, мотивации и распределения рабочих обязанностей.</p>
+          </div>
+
+          <!-- Завершено: PRINCE2 Practitioner -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2014</span>
+            </div>
+            <h3 class="edu-title">PRINCE2 Practitioner</h3>
+            <p class="edu-institution">AXELOS / APMG</p>
+            <p class="edu-desc">Международный квалификационный стандарт практического управления проектами.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Портфолио -->
+    <section class="section portfolio-section" id="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Проекты</span>
+          <h2 class="section-title">Портфолио</h2>
+          <p class="section-description">Публичные веб-проекты и репозитории, отобранные для будущей базы знаний ассистента</p>
+        </div>
+
+        <div class="portfolio-grid">
+          <!-- Проект 1: my_public_face (публичный) -->
+          <article class="project-card">
+            <div class="project-header">
+              <span class="status-badge status-public">Публичный проект</span>
+              <span class="project-tech">HTML • CSS • JS</span>
+            </div>
+            <h3 class="project-title">my_public_face</h3>
+            <p class="project-desc">
+              Персональная веб-страница, полностью спроектированная и запрограммированная автором.
+              Демонстрирует базовые принципы верстки, структурирования контента и работы с веб-стандартами.
+            </p>
+            <div class="project-footer">
+              <a href="https://ajandris.github.io/my-public-face/" target="_blank" rel="noopener noreferrer" class="project-link">
+                Перейти к проекту <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Проект 2: tic-tac-toe (публичный) -->
+          <article class="project-card">
+            <div class="project-header">
+              <span class="status-badge status-public">Публичный проект</span>
+              <span class="project-tech">HTML • CSS • JavaScript</span>
+            </div>
+            <h3 class="project-title">tic-tac-toe</h3>
+            <p class="project-desc">
+              Классическая интерактивная игра, реализованная на нативном JavaScript с визуальным оформлением на CSS.
+              Полностью запрограммирована автором. Отображает логику состояния игры, проверки победителя и обработку событий.
+            </p>
+            <div class="project-footer">
+              <a href="https://ajandris.github.io/tic-tac-toe/" target="_blank" rel="noopener noreferrer" class="project-link">
+                Перейти к проекту <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Проект 3: TheDecisionPoint (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Проект диплома</span>
+            </div>
+            <h3 class="project-title">TheDecisionPoint</h3>
+            <p class="project-desc">
+              Проект включён в перечень первоисточников для будущей RAG-базы знаний AI-ассистента.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 4: simpleshop (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Проект диплома</span>
+            </div>
+            <h3 class="project-title">simpleshop</h3>
+            <p class="project-desc">
+              Проект включён в перечень первоисточников для будущей RAG-базы знаний AI-ассистента.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 5: postgres_db_desc (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">PostgreSQL • SQL</span>
+            </div>
+            <h3 class="project-title">postgres_db_desc</h3>
+            <p class="project-desc">
+              Проект описания и анализа реляционных баз данных, включён в структуру будущей базы знаний.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 6: candlemania (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Веб-приложение</span>
+            </div>
+            <h3 class="project-title">candlemania</h3>
+            <p class="project-desc">
+              Проект веб-разработки, отобранный для индексации и последующего анализа AI-ассистентом.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="portfolio-note">
+          <p>
+            Примечание: внешние справочные профили (например, LinkedIn) могут быть добавлены в качестве сопутствующих ссылок после предоставления точного подтверждённого адреса. Они не используются в качестве источников базы знаний и не входят в векторный индекс RAG.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Чем я могу помочь -->
+    <section class="section services-section" id="services">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Сотрудничество</span>
+          <h2 class="section-title">Чем я могу помочь</h2>
+          <p class="section-description">Направления прикладной работы, подкреплённые подтверждённым опытом и обучением</p>
+        </div>
+
+        <div class="services-grid">
+          <div class="service-card">
+            <div class="service-icon" aria-hidden="true">🐍</div>
+            <h3 class="service-title">Разработка Python-веб-приложений</h3>
+            <p class="service-desc">
+              Создание надежных бэкенд-сервисов на базе FastAPI и Django, проектирование четкой архитектуры и REST API.
+            </p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" aria-hidden="true">🗄️</div>
+            <h3 class="service-title">Проектирование баз данных</h3>
+            <p class="service-desc">
+              Нормализация структур, оптимизация SQL-запросов и работа с PostgreSQL, Oracle и MySQL с акцентом на целостность данных.
+            </p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" aria-hidden="true">📐</div>
+            <h3 class="service-title">Системный и бизнес-анализ</h3>
+            <p class="service-desc">
+              Формализация бизнес-требований, составление технической документации и интеграционных схем взаимодействия систем.
+            </p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" aria-hidden="true">🤖</div>
+            <h3 class="service-title">Прототипирование AI-ассистентов</h3>
+            <p class="service-desc">
+              Разработка двухэтапных архитектур на базе LLM, RAG и векторных хранилищ с защитой от вымышленных фактов (галлюцинаций).
+            </p>
+          </div>
+
+          <div class="service-card">
+            <div class="service-icon" aria-hidden="true">⚡</div>
+            <h3 class="service-title">Автоматизация обработки данных</h3>
+            <p class="service-desc">
+              Создание скриптов и пайплайнов загрузки, валидации, очистки и преобразования структурированной и текстовой информации.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI-ассистент -->
+    <section class="section assistant-section" id="ai-assistant">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag section-tag-ai">✦ Интерактивный компонент</span>
+          <h2 class="section-title">AI-ассистент</h2>
+          <p class="section-description">
+            Специализированный интерфейс для анализа профессионального профиля Андриса Янчевскиса
+          </p>
+        </div>
+
+        <div class="assistant-wrapper">
+          <!-- Панель чата -->
+          <div class="chat-container" role="region" aria-label="Чат с AI-ассистентом">
+            <div class="chat-header">
+              <div class="chat-header-info">
+                <span class="chat-avatar" aria-hidden="true">✦</span>
+                <div>
+                  <h3 class="chat-title">Ассистент по компетенциям</h3>
+                  <span class="chat-status">Подготовка интеграции</span>
+                </div>
+              </div>
+              <div class="chat-meta">
+                <span class="tag-status-preparing">MVP 0.3.0</span>
+              </div>
+            </div>
+
+            <!-- Область сообщений -->
+            <div class="chat-messages" id="chat-messages" tabindex="0" aria-live="polite" aria-label="История сообщений чата">
+              <div class="message message-system">
+                <div class="message-bubble">
+                  <p>
+                    Здравствуйте! Я спроектирован для ответов на вопросы о подтверждённом опыте, навыках, образовании и проектах Андриса Янчевскиса.
+                  </p>
+                  <p class="message-subtext">
+                    Вы можете выбрать пример вопроса ниже или ввести свой вопрос в поле ввода.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Будущая область источников -->
+            <div class="sources-panel" id="sources-panel" aria-label="Подтверждённые источники ответа" hidden>
+              <h4 class="sources-title">Источники контекста:</h4>
+              <ul class="sources-list" id="sources-list"></ul>
+            </div>
+
+            <!-- Примеры вопросов -->
+            <div class="prompt-chips-wrapper">
+              <span class="chips-label">Примеры вопросов:</span>
+              <div class="prompt-chips" role="group" aria-label="Примеры вопросов для ассистента">
+                <button type="button" class="chip-btn" data-question="Какой у Андриса опыт разработки на Python?">
+                  Какой у Андриса опыт разработки на Python?
+                </button>
+                <button type="button" class="chip-btn" data-question="Какие проекты демонстрируют знание Django?">
+                  Какие проекты демонстрируют знание Django?
+                </button>
+                <button type="button" class="chip-btn" data-question="Подходит ли опыт Андриса для моего проекта?">
+                  Подходит ли опыт Андриса для моего проекта?
+                </button>
+                <button type="button" class="chip-btn" data-question="Какое у Андриса образование в области IT и AI?">
+                  Какое у Андриса образование в области IT и AI?
+                </button>
+              </div>
+            </div>
+
+            <!-- Форма отправки вопроса -->
+            <form class="chat-form" id="chat-form">
+              <div class="input-group">
+                <label for="chat-input" class="visually-hidden">Ваш вопрос об опыте Андриса Янчевскиса</label>
+                <input
+                  type="text"
+                  id="chat-input"
+                  name="message"
+                  class="chat-input"
+                  placeholder="Задайте вопрос об опыте, навыках или проектах..."
+                  required
+                  autocomplete="off"
+                >
+                <button type="submit" class="btn btn-send" id="chat-submit-btn">
+                  <span>Отправить</span>
+                  <span aria-hidden="true">➤</span>
+                </button>
+              </div>
+              <div class="chat-feedback" id="chat-feedback" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <!-- Архитектурная подсказка для дипломного проекта -->
+          <div class="assistant-info-card">
+            <h3 class="info-card-title">Принцип работы будущей версии</h3>
+            <ol class="flow-steps">
+              <li>
+                <strong>Анализ намерения:</strong> Первое обращение к LLM определяет суть вопроса и формирует поисковые термины.
+              </li>
+              <li>
+                <strong>Векторный поиск RAG:</strong> Поиск релевантных подтверждённых чанков в базе знаний Qdrant.
+              </li>
+              <li>
+                <strong>Синтез ответа:</strong> Второе обращение к LLM генерирует ответ строго на основе найденного контекста.
+              </li>
+              <li>
+                <strong>Прозрачность:</strong> Отображение ссылок на первоисточники и честный отказ при отсутствии данных.
+              </li>
+            </ol>
+            <div class="notice-box">
+              <span class="notice-icon" aria-hidden="true">ℹ</span>
+              <p>
+                В текущей итерации внешние LLM и векторные базы не опрашиваются. При попытке отправки система показывает честное информационное сообщение.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Контакты и сотрудничество -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Связь</span>
+          <h2 class="section-title">Контакты и сотрудничество</h2>
+          <p class="section-description">Обсуждение вакансий, проектных задач и возможностей профессионального взаимодействия</p>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-content">
+            <h3 class="contact-title">Готовы обсудить задачу или проект?</h3>
+            <p class="contact-desc">
+              Если вы ищете специалиста для решения задач бэкенд-разработки на Python, построения баз данных,
+              системного анализа или проектирования AI-ассистентов, я открыт к профессиональному диалогу.
+            </p>
+            <div class="contact-state">
+              <span class="neutral-note">Подтверждённые прямые контактные данные подготавливаются к публикации</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-info">
+        <span class="footer-name">Андрис Янчевскис</span>
+        <p class="footer-note">
+          Дипломный проект: Персональный сайт с AI-ассистентом для представления профессиональных компетенций
+        </p>
+        <p class="footer-year">© 2026 Все права защищены</p>
+      </div>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <ul class="footer-links">
+          <li><a href="#about">Обо мне</a></li>
+          <li><a href="#experience">Опыт</a></li>
+          <li><a href="#skills">Навыки</a></li>
+          <li><a href="#education">Обучение</a></li>
+          <li><a href="#portfolio">Портфолио</a></li>
+          <li><a href="#ai-assistant">AI-ассистент</a></li>
+          <li><a href="#contact">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/static/js/chat.js"></script>
+</body>
+</html>
