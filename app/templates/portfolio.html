@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Портфолио проектов — {{ settings.app_name }}{% endblock %}
+
+{% block content %}
+    <!-- Портфолио -->
+    <section class="section portfolio-section" id="portfolio">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Проекты</span>
+          <h2 class="section-title">Портфолио</h2>
+          <p class="section-description">Публичные веб-проекты и репозитории, отобранные для будущей базы знаний ассистента</p>
+        </div>
+
+        <div class="portfolio-grid">
+          <!-- Проект 1: my_public_face (публичный) -->
+          <article class="project-card">
+            <div class="project-header">
+              <span class="status-badge status-public">Публичный проект</span>
+              <span class="project-tech">HTML • CSS • JS</span>
+            </div>
+            <h3 class="project-title">my_public_face</h3>
+            <p class="project-desc">
+              Персональная веб-страница, полностью спроектированная и запрограммированная автором.
+              Демонстрирует базовые принципы верстки, структурирования контента и работы с веб-стандартами.
+            </p>
+            <div class="project-footer">
+              <a href="https://ajandris.github.io/my-public-face/" target="_blank" rel="noopener noreferrer" class="project-link">
+                Перейти к проекту <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Проект 2: tic-tac-toe (публичный) -->
+          <article class="project-card">
+            <div class="project-header">
+              <span class="status-badge status-public">Публичный проект</span>
+              <span class="project-tech">HTML • CSS • JavaScript</span>
+            </div>
+            <h3 class="project-title">tic-tac-toe</h3>
+            <p class="project-desc">
+              Классическая интерактивная игра, реализованная на нативном JavaScript с визуальным оформлением на CSS.
+              Полностью запрограммирована автором. Отображает логику состояния игры, проверки победителя и обработку событий.
+            </p>
+            <div class="project-footer">
+              <a href="https://ajandris.github.io/tic-tac-toe/" target="_blank" rel="noopener noreferrer" class="project-link">
+                Перейти к проекту <span aria-hidden="true">↗</span>
+              </a>
+            </div>
+          </article>
+
+          <!-- Проект 3: TheDecisionPoint (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Проект диплома</span>
+            </div>
+            <h3 class="project-title">TheDecisionPoint</h3>
+            <p class="project-desc">
+              Проект включён в перечень первоисточников для будущей RAG-базы знаний AI-ассистента.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 4: simpleshop (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Проект диплома</span>
+            </div>
+            <h3 class="project-title">simpleshop</h3>
+            <p class="project-desc">
+              Проект включён в перечень первоисточников для будущей RAG-базы знаний AI-ассистента.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 5: postgres_db_desc (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">PostgreSQL • SQL</span>
+            </div>
+            <h3 class="project-title">postgres_db_desc</h3>
+            <p class="project-desc">
+              Проект описания и анализа реляционных баз данных, включён в структуру будущей базы знаний.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+
+          <!-- Проект 6: candlemania (база знаний) -->
+          <article class="project-card project-card-pending">
+            <div class="project-header">
+              <span class="status-badge status-kb">База знаний</span>
+              <span class="project-tech">Веб-приложение</span>
+            </div>
+            <h3 class="project-title">candlemania</h3>
+            <p class="project-desc">
+              Проект веб-разработки, отобранный для индексации и последующего анализа AI-ассистентом.
+            </p>
+            <div class="project-footer">
+              <span class="neutral-note">Дополнительные сведения будут добавлены</span>
+            </div>
+          </article>
+        </div>
+
+        <div class="portfolio-note">
+          <p>
+            Примечание: внешние справочные профили (например, LinkedIn) могут быть добавлены в качестве сопутствующих ссылок после предоставления точного подтверждённого адреса. Они не используются в качестве источников базы знаний и не входят в векторный индекс RAG.
+          </p>
+        </div>
+      </div>
+    </section>
+{% endblock %}

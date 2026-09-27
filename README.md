@@ -60,7 +60,8 @@ andris-ai-personal-assistant/
 │   │   └── js/
 │   │       └── chat.js            # Мобильное меню, скролл, чат
 │   └── templates/
-│       └── index.html             # Главная Jinja2-страница (русский язык)
+│       ├── base.html              # Базовый Jinja2-шаблон (шапка, подвал, мета-теги, скрипты)
+│       └── index.html             # Главная Jinja2-страница (наследует base.html)
 ├── knowledge_base/                # База знаний
 │   ├── raw/                       # Исходные материалы и документы
 │   └── processed/                 # Обработанные чанки

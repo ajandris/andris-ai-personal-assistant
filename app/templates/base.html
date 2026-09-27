@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Персональный сайт и портфолио Андриса Янчевскиса — разработчика Python, системного аналитика и создателя AI-ассистентов.">
+  <title>{% block title %}{{ settings.app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/styles.css?v=2">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Перейти к основному содержимому</a>
+
+  <!-- Шапка и навигация -->
+  <header class="site-header" id="top">
+    <div class="container header-container">
+      <a href="/" class="brand" aria-label="Андрис Янчевскис — на главную">
+        <span class="brand-avatar" aria-hidden="true">АЯ</span>
+        <span class="brand-text">
+          <span class="brand-name">Андрис Янчевскис</span>
+          <span class="brand-role">Python / AI / Аналитика</span>
+        </span>
+      </a>
+
+      <button class="menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-navigation" aria-label="Открыть главное меню">
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+        <span class="menu-bar"></span>
+      </button>
+
+      <nav class="site-nav" id="primary-navigation" aria-label="Основная навигация">
+        <ul class="nav-list">
+          <li><a href="/#about" class="nav-link" data-nav-section="about">Обо мне</a></li>
+          <li><a href="/#experience" class="nav-link" data-nav-section="experience">Опыт</a></li>
+          <li><a href="/skills" class="nav-link{% if active_page == 'skills' %} active is-active{% endif %}"{% if active_page == 'skills' %} aria-current="page"{% endif %}>Навыки</a></li>
+          <li><a href="/#education" class="nav-link" data-nav-section="education">Обучение</a></li>
+          <li><a href="/portfolio" class="nav-link{% if active_page == 'portfolio' %} active is-active{% endif %}"{% if active_page == 'portfolio' %} aria-current="page"{% endif %}>Портфолио</a></li>
+          <li><a href="/#services" class="nav-link" data-nav-section="services">Чем могу помочь</a></li>
+          <li><a href="/#contact" class="nav-link" data-nav-section="contact">Контакты</a></li>
+        </ul>
+        <a href="/ai-assistant" class="btn btn-header-ai{% if active_page == 'ai_assistant' %} active is-active{% endif %}"{% if active_page == 'ai_assistant' %} aria-current="page"{% endif %}>
+          <span class="ai-sparkle" aria-hidden="true">✦</span>
+          <span>Задать вопрос AI-ассистенту</span>
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Подвал -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-info">
+        <span class="footer-name">Андрис Янчевскис</span>
+        <p class="footer-note">
+          Дипломный проект: Персональный сайт с AI-ассистентом для представления профессиональных компетенций
+        </p>
+        <p class="footer-year">© 2026 Все права защищены</p>
+      </div>
+      <nav class="footer-nav" aria-label="Навигация в подвале">
+        <ul class="footer-links">
+          <li><a href="/">Главная</a></li>
+          <li><a href="/#about">Обо мне</a></li>
+          <li><a href="/#experience">Опыт</a></li>
+          <li><a href="/skills">Навыки</a></li>
+          <li><a href="/#education">Обучение</a></li>
+          <li><a href="/portfolio">Портфолио</a></li>
+          <li><a href="/ai-assistant">AI-ассистент</a></li>
+          <li><a href="/#contact">Контакты</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="/static/js/chat.js?v=2"></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

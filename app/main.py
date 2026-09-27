@@ -32,7 +32,40 @@ async def index_page(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"settings": current_settings},
+        context={"settings": current_settings, "active_page": "home"},
+    )
+
+
+@app.get("/skills", summary="Страница навыков")
+async def skills_page(request: Request):
+    """Отображение страницы навыков и компетенций."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="skills.html",
+        context={"settings": current_settings, "active_page": "skills"},
+    )
+
+
+@app.get("/portfolio", summary="Страница портфолио")
+async def portfolio_page(request: Request):
+    """Отображение страницы портфолио проектов."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="portfolio.html",
+        context={"settings": current_settings, "active_page": "portfolio"},
+    )
+
+
+@app.get("/ai-assistant", summary="Страница AI-ассистента")
+async def ai_assistant_page(request: Request):
+    """Отображение отдельной страницы AI-ассистента."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="ai_assistant.html",
+        context={"settings": current_settings, "active_page": "ai_assistant"},
     )
 
 

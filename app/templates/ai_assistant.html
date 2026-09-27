@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}AI-ассистент — {{ settings.app_name }}{% endblock %}
+
+{% block content %}
+    <!-- AI-ассистент -->
+    <section class="section assistant-section" id="ai-assistant">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag section-tag-ai">✦ Интерактивный компонент</span>
+          <h2 class="section-title">AI-ассистент</h2>
+          <p class="section-description">
+            Специализированный интерфейс для анализа профессионального профиля Андриса Янчевскиса
+          </p>
+        </div>
+
+        <div class="assistant-wrapper">
+          <!-- Панель чата -->
+          <div class="chat-container" role="region" aria-label="Чат с AI-ассистентом">
+            <div class="chat-header">
+              <div class="chat-header-info">
+                <span class="chat-avatar" aria-hidden="true">✦</span>
+                <div>
+                  <h3 class="chat-title">Ассистент по компетенциям</h3>
+                  <span class="chat-status">Подготовка интеграции</span>
+                </div>
+              </div>
+              <div class="chat-meta">
+                <span class="tag-status-preparing">MVP 0.3.0</span>
+              </div>
+            </div>
+
+            <!-- Область сообщений -->
+            <div class="chat-messages" id="chat-messages" tabindex="0" aria-live="polite" aria-label="История сообщений чата">
+              <div class="message message-system">
+                <div class="message-bubble">
+                  <p>
+                    Здравствуйте! Я спроектирован для ответов на вопросы о подтверждённом опыте, навыках, образовании и проектах Андриса Янчевскиса.
+                  </p>
+                  <p class="message-subtext">
+                    Вы можете выбрать пример вопроса ниже или ввести свой вопрос в поле ввода.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Будущая область источников -->
+            <div class="sources-panel" id="sources-panel" aria-label="Подтверждённые источники ответа" hidden>
+              <h4 class="sources-title">Источники контекста:</h4>
+              <ul class="sources-list" id="sources-list"></ul>
+            </div>
+
+            <!-- Примеры вопросов -->
+            <div class="prompt-chips-wrapper">
+              <span class="chips-label">Примеры вопросов:</span>
+              <div class="prompt-chips" role="group" aria-label="Примеры вопросов для ассистента">
+                <button type="button" class="chip-btn" data-question="Какой у Андриса опыт разработки на Python?">
+                  Какой у Андриса опыт разработки на Python?
+                </button>
+                <button type="button" class="chip-btn" data-question="Какие проекты демонстрируют знание Django?">
+                  Какие проекты демонстрируют знание Django?
+                </button>
+                <button type="button" class="chip-btn" data-question="Подходит ли опыт Андриса для моего проекта?">
+                  Подходит ли опыт Андриса для моего проекта?
+                </button>
+                <button type="button" class="chip-btn" data-question="Какое у Андриса образование в области IT и AI?">
+                  Какое у Андриса образование в области IT и AI?
+                </button>
+              </div>
+            </div>
+
+            <!-- Форма отправки вопроса -->
+            <form class="chat-form" id="chat-form">
+              <div class="input-group">
+                <label for="chat-input" class="visually-hidden">Ваш вопрос об опыте Андриса Янчевскиса</label>
+                <input
+                  type="text"
+                  id="chat-input"
+                  name="message"
+                  class="chat-input"
+                  placeholder="Задайте вопрос об опыте, навыках или проектах..."
+                  required
+                  autocomplete="off"
+                >
+                <button type="submit" class="btn btn-send" id="chat-submit-btn">
+                  <span>Отправить</span>
+                  <span aria-hidden="true">➤</span>
+                </button>
+              </div>
+              <div class="chat-feedback" id="chat-feedback" role="status" aria-live="polite"></div>
+            </form>
+          </div>
+
+          <!-- Архитектурная подсказка для дипломного проекта -->
+          <div class="assistant-info-card">
+            <h3 class="info-card-title">Принцип работы будущей версии</h3>
+            <ol class="flow-steps">
+              <li>
+                <strong>Анализ намерения:</strong> Первое обращение к LLM определяет суть вопроса и формирует поисковые термины.
+              </li>
+              <li>
+                <strong>Векторный поиск RAG:</strong> Поиск релевантных подтверждённых чанков в базе знаний Qdrant.
+              </li>
+              <li>
+                <strong>Синтез ответа:</strong> Второе обращение к LLM генерирует ответ строго на основе найденного контекста.
+              </li>
+              <li>
+                <strong>Прозрачность:</strong> Отображение ссылок на первоисточники и честный отказ при отсутствии данных.
+              </li>
+            </ol>
+            <div class="notice-box">
+              <span class="notice-icon" aria-hidden="true">ℹ</span>
+              <p>
+                В текущей итерации внешние LLM и векторные базы не опрашиваются. При попытке отправки система показывает честное информационное сообщение.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}

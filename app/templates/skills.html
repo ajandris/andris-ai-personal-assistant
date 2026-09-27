@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Навыки и компетенции — {{ settings.app_name }}{% endblock %}
+
+{% block content %}
+    <!-- Навыки -->
+    <section class="section skills-section" id="skills">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Компетенции</span>
+          <h2 class="section-title">Навыки</h2>
+          <p class="section-description">Подтверждённые практические и теоретические технологии и методологии без искусственных рейтингов</p>
+        </div>
+
+        <div class="skills-grid">
+          <!-- Группа 1: Бэкенд и языки -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Языки и бэкенд</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">Python</li>
+              <li class="skill-pill">FastAPI</li>
+              <li class="skill-pill">Django</li>
+            </ul>
+          </div>
+
+          <!-- Группа 2: Базы данных и SQL -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Базы данных и хранение</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">SQL</li>
+              <li class="skill-pill">PostgreSQL</li>
+              <li class="skill-pill">Oracle</li>
+              <li class="skill-pill">MySQL</li>
+            </ul>
+          </div>
+
+          <!-- Группа 3: Фронтенд -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Веб-разработка</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">HTML</li>
+              <li class="skill-pill">CSS</li>
+              <li class="skill-pill">JavaScript</li>
+            </ul>
+          </div>
+
+          <!-- Группа 4: AI и векторный поиск -->
+          <div class="skill-category-card">
+            <h3 class="category-title">AI и прикладные технологии</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">LLM</li>
+              <li class="skill-pill">embeddings</li>
+            </ul>
+          </div>
+
+          <!-- Группа 5: Аналитика и управление -->
+          <div class="skill-category-card">
+            <h3 class="category-title">Аналитика и процессы</h3>
+            <ul class="skills-pill-list">
+              <li class="skill-pill">системный анализ</li>
+              <li class="skill-pill">бизнес-анализ</li>
+              <li class="skill-pill">управление проектами</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+{% endblock %}
