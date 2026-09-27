@@ -36,6 +36,17 @@ async def index_page(request: Request):
     )
 
 
+@app.get("/experience", summary="Страница опыта работы")
+async def experience_page(request: Request):
+    """Отображение страницы практического опыта работы."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="experience.html",
+        context={"settings": current_settings, "active_page": "experience"},
+    )
+
+
 @app.get("/skills", summary="Страница навыков")
 async def skills_page(request: Request):
     """Отображение страницы навыков и компетенций."""
@@ -44,6 +55,17 @@ async def skills_page(request: Request):
         request=request,
         name="skills.html",
         context={"settings": current_settings, "active_page": "skills"},
+    )
+
+
+@app.get("/education", summary="Страница образования и обучения")
+async def education_page(request: Request):
+    """Отображение страницы образования, квалификаций и сертификаций."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="education.html",
+        context={"settings": current_settings, "active_page": "education"},
     )
 
 

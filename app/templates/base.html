@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Персональный сайт и портфолио Андриса Янчевскиса — разработчика Python, системного аналитика и создателя AI-ассистентов.">
+  <meta name="description" content="Персональный сайт и портфолио Андриса Янчевскиса — разработчика Python и создателя AI-ассистентов.">
   <title>{% block title %}{{ settings.app_name }}{% endblock %}</title>
   <link rel="stylesheet" href="/static/css/styles.css?v=2">
   {% block extra_head %}{% endblock %}
@@ -18,7 +18,7 @@
         <span class="brand-avatar" aria-hidden="true">АЯ</span>
         <span class="brand-text">
           <span class="brand-name">Андрис Янчевскис</span>
-          <span class="brand-role">Python / AI / Аналитика</span>
+          <span class="brand-role">AI Agents</span>
         </span>
       </a>
 
@@ -31,9 +31,9 @@
       <nav class="site-nav" id="primary-navigation" aria-label="Основная навигация">
         <ul class="nav-list">
           <li><a href="/#about" class="nav-link" data-nav-section="about">Обо мне</a></li>
-          <li><a href="/#experience" class="nav-link" data-nav-section="experience">Опыт</a></li>
+          <li><a href="/experience" class="nav-link{% if active_page == 'experience' %} active is-active{% endif %}"{% if active_page == 'experience' %} aria-current="page"{% endif %}>Опыт</a></li>
           <li><a href="/skills" class="nav-link{% if active_page == 'skills' %} active is-active{% endif %}"{% if active_page == 'skills' %} aria-current="page"{% endif %}>Навыки</a></li>
-          <li><a href="/#education" class="nav-link" data-nav-section="education">Обучение</a></li>
+          <li><a href="/education" class="nav-link{% if active_page == 'education' %} active is-active{% endif %}"{% if active_page == 'education' %} aria-current="page"{% endif %}>Обучение</a></li>
           <li><a href="/portfolio" class="nav-link{% if active_page == 'portfolio' %} active is-active{% endif %}"{% if active_page == 'portfolio' %} aria-current="page"{% endif %}>Портфолио</a></li>
           <li><a href="/#services" class="nav-link" data-nav-section="services">Чем могу помочь</a></li>
           <li><a href="/#contact" class="nav-link" data-nav-section="contact">Контакты</a></li>
@@ -64,9 +64,9 @@
         <ul class="footer-links">
           <li><a href="/">Главная</a></li>
           <li><a href="/#about">Обо мне</a></li>
-          <li><a href="/#experience">Опыт</a></li>
+          <li><a href="/experience">Опыт</a></li>
           <li><a href="/skills">Навыки</a></li>
-          <li><a href="/#education">Обучение</a></li>
+          <li><a href="/education">Обучение</a></li>
           <li><a href="/portfolio">Портфолио</a></li>
           <li><a href="/ai-assistant">AI-ассистент</a></li>
           <li><a href="/#contact">Контакты</a></li>

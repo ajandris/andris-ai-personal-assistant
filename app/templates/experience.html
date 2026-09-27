@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Опыт работы — {{ settings.app_name }}{% endblock %}
+
+{% block content %}
+    <!-- Опыт работы -->
+    <section class="section experience-section" id="experience">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Хронология</span>
+          <h2 class="section-title">Опыт работы</h2>
+          <p class="section-description">Подтверждённые периоды практической профессиональной деятельности</p>
+        </div>
+
+        <div class="timeline">
+          <!-- Период 1 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">2013 — настоящее время</span>
+                <span class="badge badge-active">Текущая деятельность</span>
+              </div>
+              <h3 class="timeline-title">Boots Alliance Burton Service Centre</h3>
+              <p class="timeline-role">Операционная работа и координация процессов</p>
+              <p class="timeline-desc">
+                Участие в ключевых операционных потоках крупного логистического центра: DotCom, Inbound, Inventory и Despatch.
+                Практический опыт организации цепочек поставок, инвентаризации и обработки заказов.
+              </p>
+              <div class="timeline-neutral">
+                <span class="neutral-note">Дополнительные сведения о проектах подразделений будут добавлены</span>
+              </div>
+            </div>
+          </article>
+
+          <!-- Период 2 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">2011 — 2013</span>
+                <span class="badge badge-completed">Завершено</span>
+              </div>
+              <h3 class="timeline-title">Самозанятость в сфере строительства</h3>
+              <p class="timeline-role">Руководство командой и организация работ</p>
+              <p class="timeline-desc">
+                Управление рабочим коллективом, планирование производственных задач, координация выполнения работ
+                и соблюдение стандартов качества и сроков.
+              </p>
+            </div>
+          </article>
+
+          <!-- Период 3 -->
+          <article class="timeline-item">
+            <div class="timeline-marker" aria-hidden="true"></div>
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-period">1995 — 2011</span>
+                <span class="badge badge-completed">Завершено</span>
+              </div>
+              <h3 class="timeline-title">IT-сектор (Латвия)</h3>
+              <p class="timeline-role">Системный анализ, программирование, управление проектами и Business Intelligence</p>
+              <p class="timeline-desc">
+                Комплексная работа над информационными системами: обследование бизнес-требований, проектирование архитектурных
+                решений, разработка программных модулей, построение аналитических отчетов и сопровождение корпоративных систем.
+              </p>
+              <div class="timeline-neutral">
+                <span class="neutral-note">Архивные материалы и детальная хронология проектов подготавливаются к публикации</span>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="portfolio-note" style="margin-top: var(--space-8);">
+          <p>
+            Все указанные этапы подтверждены трудовой биографией и документами. Детализированная информация по технологическим стекам и выполненным задачам входит в базу знаний AI-ассистента.
+          </p>
+        </div>
+      </div>
+    </section>
+{% endblock %}

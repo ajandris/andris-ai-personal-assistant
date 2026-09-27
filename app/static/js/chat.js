@@ -141,8 +141,14 @@ function initActiveNavHighlight() {
 
   // A. Dedicated Subpages
   if (!isHomePage) {
-    if (currentPath === "/skills") {
+    if (currentPath === "/experience") {
+      const link = navLinks.find((l) => l.getAttribute("href") === "/experience");
+      setActiveLink(link, true);
+    } else if (currentPath === "/skills") {
       const link = navLinks.find((l) => l.getAttribute("href") === "/skills");
+      setActiveLink(link, true);
+    } else if (currentPath === "/education") {
+      const link = navLinks.find((l) => l.getAttribute("href") === "/education");
       setActiveLink(link, true);
     } else if (currentPath === "/portfolio") {
       const link = navLinks.find((l) => l.getAttribute("href") === "/portfolio");
@@ -154,7 +160,7 @@ function initActiveNavHighlight() {
   }
 
   // B. Homepage ScrollSpy for sections
-  const sectionIds = ["about", "experience", "education", "services", "contact"];
+  const sectionIds = ["about", "services", "contact"];
   const sections = sectionIds
     .map((id) => document.getElementById(id))
     .filter((el) => el !== null);

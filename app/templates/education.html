@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Образование и обучение — {{ settings.app_name }}{% endblock %}
+
+{% block content %}
+    <!-- Образование и обучение -->
+    <section class="section education-section" id="education">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Квалификация</span>
+          <h2 class="section-title">Образование и обучение</h2>
+          <p class="section-description">Подтверждённые академические дипломы, профессиональные сертификации и актуальные программы</p>
+        </div>
+
+        <div class="education-grid">
+          <!-- В процессе: Vibe Coder -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">Vibe Coder</h3>
+            <p class="edu-institution">univerus.ai</p>
+            <p class="edu-desc">Современные подходы к разработке ПО с использованием передового AI-инструментария.</p>
+          </div>
+
+          <!-- В процессе: AI/ML Developer -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">AI/ML Developer</h3>
+            <p class="edu-institution">AI Institute</p>
+            <p class="edu-desc">Изучение алгоритмов машинного обучения, обработки данных и архитектур нейросетей.</p>
+          </div>
+
+          <!-- В процессе: AI Agents Developer -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-in-progress">В процессе</span>
+              <span class="edu-period">Обучение продолжается</span>
+            </div>
+            <h3 class="edu-title">AI Agents Developer</h3>
+            <p class="edu-institution">AI Institute</p>
+            <p class="edu-desc">Проектирование автономных AI-агентов, RAG-систем, цепочек рассуждений и инструментов взаимодействия.</p>
+          </div>
+
+          <!-- Завершено: Google AI Professional -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2026</span>
+            </div>
+            <h3 class="edu-title">Google AI Professional</h3>
+            <p class="edu-institution">Coursera</p>
+            <p class="edu-desc">Профессиональная сертификация в области концепций и внедрения технологий искусственного интеллекта.</p>
+          </div>
+
+          <!-- Завершено: Level 5 Diploma in Web Application Development -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2026</span>
+            </div>
+            <h3 class="edu-title">Level 5 Diploma in Web Application Development</h3>
+            <p class="edu-institution">Code Institute</p>
+            <p class="edu-desc">Комплексная разработка масштабируемых веб-приложений полного цикла.</p>
+          </div>
+
+          <!-- Завершено: Postgraduate Diploma in Computer Science with Big Data Analytics -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2023</span>
+            </div>
+            <h3 class="edu-title">Postgraduate Diploma in Computer Science with Big Data Analytics</h3>
+            <p class="edu-institution">Wrexham Glyndwr University</p>
+            <p class="edu-desc">Последипломное образование в области компьютерных наук и аналитики больших объемов данных.</p>
+          </div>
+
+          <!-- Завершено: BSc (Hons) Computing and IT (Software) -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2019</span>
+            </div>
+            <h3 class="edu-title">BSc (Hons) Computing and IT (Software)</h3>
+            <p class="edu-institution">The Open University</p>
+            <p class="edu-desc">Степень бакалавра с отличием по направлению «Вычислительные системы и информационные технологии (ПО)».</p>
+          </div>
+
+          <!-- Завершено: Principles of Warehousing and Storage -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2019</span>
+            </div>
+            <h3 class="edu-title">Principles of Warehousing and Storage</h3>
+            <p class="edu-institution">NCFE Level 2</p>
+            <p class="edu-desc">Основы организации складского учета, хранения и безопасности логистических операций.</p>
+          </div>
+
+          <!-- Завершено: Team Leading -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2016</span>
+            </div>
+            <h3 class="edu-title">Team Leading</h3>
+            <p class="edu-institution">NCFE Level 2</p>
+            <p class="edu-desc">Принципы эффективного руководства командой, мотивации и распределения рабочих обязанностей.</p>
+          </div>
+
+          <!-- Завершено: PRINCE2 Practitioner -->
+          <div class="edu-card">
+            <div class="edu-header">
+              <span class="status-badge status-completed">Завершено</span>
+              <span class="edu-year">2014</span>
+            </div>
+            <h3 class="edu-title">PRINCE2 Practitioner</h3>
+            <p class="edu-institution">AXELOS / APMG</p>
+            <p class="edu-desc">Международный квалификационный стандарт практического управления проектами.</p>
+          </div>
+        </div>
+
+        <div class="portfolio-note" style="margin-top: var(--space-8);">
+          <p>
+            Все академические степени, дипломы и сертификаты подтверждены соответствующими документами об образовании. Сведения об учебных программах и курсах включены в подтверждённую базу знаний ассистента.
+          </p>
+        </div>
+      </div>
+    </section>
+{% endblock %}

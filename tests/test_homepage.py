@@ -23,6 +23,13 @@ def test_homepage_author_name():
     assert "Андрис Янчевскис" in response.text
 
 
+def test_homepage_brand_role():
+    """Шапка содержит подпись роли «AI Agents»."""
+    client = TestClient(app)
+    response = client.get("/")
+    assert '<span class="brand-role">AI Agents</span>' in response.text
+
+
 def test_homepage_ai_assistant_section():
     """Главная страница содержит ссылку и информирование об AI-ассистенте."""
     client = TestClient(app)
@@ -76,6 +83,15 @@ def test_homepage_uses_base_template():
     assert '<footer class="site-footer"' in response.text
 
 
+def test_experience_page_route():
+    """GET /experience возвращает страницу опыта работы."""
+    client = TestClient(app)
+    response = client.get("/experience")
+    assert response.status_code == 200
+    assert "Опыт работы" in response.text
+    assert 'id="experience"' in response.text
+
+
 def test_skills_page_route():
     """GET /skills возвращает страницу навыков."""
     client = TestClient(app)
@@ -83,6 +99,15 @@ def test_skills_page_route():
     assert response.status_code == 200
     assert "Навыки" in response.text
     assert 'id="skills"' in response.text
+
+
+def test_education_page_route():
+    """GET /education возвращает страницу образования и обучения."""
+    client = TestClient(app)
+    response = client.get("/education")
+    assert response.status_code == 200
+    assert "Образование и обучение" in response.text
+    assert 'id="education"' in response.text
 
 
 def test_portfolio_page_route():
@@ -103,12 +128,28 @@ def test_ai_assistant_page_route():
     assert 'id="ai-assistant"' in response.text
 
 
+def test_active_menu_item_on_experience_page():
+    """На странице /experience пункт меню «Опыт» отмечен как активный."""
+    client = TestClient(app)
+    response = client.get("/experience")
+    assert response.status_code == 200
+    assert 'href="/experience" class="nav-link active is-active" aria-current="page"' in response.text
+
+
 def test_active_menu_item_on_skills_page():
     """На странице /skills пункт меню «Навыки» отмечен как активный."""
     client = TestClient(app)
     response = client.get("/skills")
     assert response.status_code == 200
     assert 'href="/skills" class="nav-link active is-active" aria-current="page"' in response.text
+
+
+def test_active_menu_item_on_education_page():
+    """На странице /education пункт меню «Обучение» отмечен как активный."""
+    client = TestClient(app)
+    response = client.get("/education")
+    assert response.status_code == 200
+    assert 'href="/education" class="nav-link active is-active" aria-current="page"' in response.text
 
 
 def test_active_menu_item_on_portfolio_page():
