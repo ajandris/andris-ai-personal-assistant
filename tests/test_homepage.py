@@ -111,12 +111,21 @@ def test_education_page_route():
 
 
 def test_portfolio_page_route():
-    """GET /portfolio возвращает страницу портфолио."""
+    """GET /portfolio возвращает страницу портфолио с проектами и ссылками."""
     client = TestClient(app)
     response = client.get("/portfolio")
     assert response.status_code == 200
     assert "Портфолио" in response.text
     assert 'id="portfolio"' in response.text
+    assert "tic-tac-toe (крестики нолики)" in response.text
+    assert "https://github.com/ajandris/my-public-face" in response.text
+    assert "https://github.com/ajandris/tic-tac-toe" in response.text
+    assert "https://github.com/ajandris/simpleshop" in response.text
+    assert "https://github.com/ajandris/candlemania" in response.text
+    assert "https://ajandris.github.io/my-public-face/" in response.text
+    assert "https://ajandris.github.io/tic-tac-toe/" in response.text
+    assert "https://theoldechristmasmarket.p.jancevskis.com/" in response.text
+    assert "https://www.candlemania.p.jancevskis.com/" in response.text
 
 
 def test_ai_assistant_page_route():

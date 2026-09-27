@@ -882,6 +882,13 @@ body {
   border-top: 1px solid var(--border-subtle);
 }
 
+.project-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: flex-start;
+}
+
 .project-link {
   display: inline-flex;
   align-items: center;
@@ -891,6 +898,14 @@ body {
   font-size: var(--font-size-sm);
   font-weight: 600;
   transition: color var(--transition-fast);
+}
+
+.project-link-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .project-link:hover {
