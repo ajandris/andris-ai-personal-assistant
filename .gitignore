@@ -229,3 +229,5 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 data/qdrant/
+*.db
+*.sqlite3

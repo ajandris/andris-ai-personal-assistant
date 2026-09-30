@@ -153,6 +153,9 @@ function initActiveNavHighlight() {
     } else if (currentPath === "/portfolio") {
       const link = navLinks.find((l) => l.getAttribute("href") === "/portfolio");
       setActiveLink(link, true);
+    } else if (currentPath === "/contact" || currentPath === "/contacts") {
+      const link = navLinks.find((l) => l.getAttribute("href") === "/contact" || l.getAttribute("href") === "/contacts");
+      setActiveLink(link, true);
     } else if (currentPath === "/ai-assistant") {
       setActiveLink(aiButton, true);
     }

@@ -101,5 +101,18 @@ async def ai_assistant_page(request: Request):
     )
 
 
+@app.get("/contact", summary="Страница контактов")
+@app.get("/contacts", summary="Страница контактов (алиас)", include_in_schema=False)
+async def contact_page(request: Request):
+    """Отображение отдельной страницы контактов и сотрудничества."""
+    current_settings = get_settings()
+    return templates.TemplateResponse(
+        request=request,
+        name="contact.html",
+        context={"settings": current_settings, "active_page": "contact"},
+    )
+
+
 # Подключение маршрутов API и health
 app.include_router(router)
+

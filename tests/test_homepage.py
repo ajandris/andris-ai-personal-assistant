@@ -279,6 +279,34 @@ def test_media_docs_accessible():
     assert response.status_code == 200
 
 
+def test_contact_page_route():
+    """GET /contact возвращает отдельную страницу контактов и сотрудничества."""
+    client = TestClient(app)
+    response = client.get("/contact")
+    assert response.status_code == 200
+    assert "Контакты и сотрудничество" in response.text
+    assert 'id="contact"' in response.text
+    assert "Обсудить с AI-ассистентом" in response.text
+    assert "https://github.com/ajandris" in response.text
+
+
+def test_contacts_alias_route():
+    """GET /contacts также отдает страницу контактов."""
+    client = TestClient(app)
+    response = client.get("/contacts")
+    assert response.status_code == 200
+    assert "Контакты и сотрудничество" in response.text
+
+
+def test_active_menu_item_on_contact_page():
+    """На странице /contact пункт меню «Контакты» отмечен как активный."""
+    client = TestClient(app)
+    response = client.get("/contact")
+    assert response.status_code == 200
+    assert 'href="/contact" class="nav-link active is-active" aria-current="page"' in response.text
+
+
+
 
 
 

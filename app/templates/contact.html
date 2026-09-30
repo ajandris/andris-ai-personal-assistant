@@ -1,0 +1,232 @@
+{% extends "base.html" %}
+
+{% block title %}Контакты и сотрудничество — {{ settings.app_name }}{% endblock %}
+
+{% block extra_head %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
+
+{% block content %}
+    <!-- Контакты и сотрудничество -->
+    <section class="section contact-section" id="contact">
+      <div class="container">
+        <div class="section-header">
+          <span class="section-tag">Связь</span>
+          <h1 class="section-title">Контакты и сотрудничество</h1>
+          <p class="section-description">Обсуждение вакансий, проектных задач и возможностей профессионального взаимодействия</p>
+        </div>
+
+        <div class="contact-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-6);">
+          <!-- Карточка диалога с AI-ассистентом -->
+          <div class="contact-card">
+            <div class="contact-content">
+              <h2 class="contact-title">Готовы обсудить задачу или проект?</h2>
+              <p class="contact-desc">
+                Если вы ищете специалиста для решения задач бэкенд-разработки на Python, построения баз данных
+                или проектирования AI-ассистентов, я открыт к профессиональному диалогу.
+              </p>
+              <div class="contact-actions">
+                <a href="/ai-assistant" class="btn btn-primary">
+                  <span class="ai-sparkle" aria-hidden="true">✦</span>
+                  Обсудить с AI-ассистентом
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Карточка профессиональных профилей и материалов -->
+          <div class="contact-card">
+            <div class="contact-content">
+              <h2 class="contact-title">Профессиональные профили</h2>
+              <p class="contact-desc">
+                Ознакомиться с открытым исходным кодом, репозиториями проектов и резюме специалиста:
+              </p>
+              <div style="display: flex; flex-direction: column; gap: var(--space-3); margin-top: var(--space-4);">
+                <a href="https://github.com/ajandris" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="justify-content: flex-start;">
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                  </svg>
+                  <span>GitHub: ajandris</span>
+                  <span aria-hidden="true" style="margin-left: auto;">↗</span>
+                </a>
+                <a href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf" target="_blank" rel="noopener noreferrer" download="Andris_Jancevskis_CV_September_2026.pdf" class="btn btn-secondary" style="justify-content: flex-start;">
+                  <span aria-hidden="true">📄</span>
+                  <span>Скачать резюме / CV (PDF)</span>
+                  <span aria-hidden="true" style="margin-left: auto;">📥</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Форма обратной связи -->
+        <div class="contact-form-card" style="margin-top: var(--space-8);">
+          <div class="contact-content">
+            <h2 class="contact-title">Написать сообщение</h2>
+            <p class="contact-desc">
+              Отправьте вопрос, предложение о сотрудничестве или проектную задачу напрямую. Ваше обращение надёжно сохраняется в системе и передаётся на email.
+            </p>
+
+            <!-- Блок статуса отправки -->
+            <div id="contact-status-alert" class="contact-alert" style="display: none;" role="alert"></div>
+
+            <form id="contact-form" class="contact-form" action="/api/contact" method="POST" novalidate>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="contact-name" class="form-label">Ваше имя <span class="required" aria-hidden="true">*</span></label>
+                  <input type="text" id="contact-name" name="name" class="form-input" placeholder="Иван Иванов" required minlength="2" maxlength="100">
+                </div>
+                <div class="form-group">
+                  <label for="contact-email" class="form-label">Ваш Email <span class="required" aria-hidden="true">*</span></label>
+                  <input type="email" id="contact-email" name="email" class="form-input" placeholder="name@example.com" required>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-top: var(--space-6);">
+                <label for="contact-subject" class="form-label">Тема сообщения <span class="required" aria-hidden="true">*</span></label>
+                <input type="text" id="contact-subject" name="subject" class="form-input" placeholder="Обсуждение проекта / вакансии" required minlength="5" maxlength="200">
+              </div>
+
+              <div class="form-group" style="margin-top: var(--space-6);">
+                <label for="contact-message" class="form-label">Сообщение <span class="required" aria-hidden="true">*</span></label>
+                <textarea id="contact-message" name="message" class="form-textarea" rows="7" placeholder="Опишите вашу задачу, вопрос или предложение..." required minlength="5" maxlength="5000"></textarea>
+              </div>
+
+              <div class="form-group recaptcha-wrapper" style="margin-top: var(--space-6);">
+                <label class="form-label">Подтверждение безопасности <span class="required" aria-hidden="true">*</span></label>
+                <div class="recaptcha-box">
+                  <div class="g-recaptcha" data-sitekey="{{ settings.recaptcha_site_key or '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }}" data-theme="dark"></div>
+                </div>
+              </div>
+
+              <div class="form-actions" style="margin-top: var(--space-8); display: flex; align-items: center; gap: var(--space-4); flex-wrap: wrap;">
+                <button type="submit" id="contact-submit-btn" class="btn btn-primary contact-submit-btn">
+                  <span class="btn-text">Отправить сообщение</span>
+                  <span class="btn-spinner" style="display: none;" aria-hidden="true"> ⏳</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  (function initContactForm() {
+    const form = document.getElementById("contact-form");
+    if (!form) return;
+
+    const alertBox = document.getElementById("contact-status-alert");
+    const submitBtn = document.getElementById("contact-submit-btn");
+    const btnText = submitBtn ? submitBtn.querySelector(".btn-text") : null;
+    const btnSpinner = submitBtn ? submitBtn.querySelector(".btn-spinner") : null;
+
+    function showAlert(type, message, isHtml) {
+      if (!alertBox) return;
+      alertBox.className = "contact-alert " + (type === "success" ? "contact-alert-success" : "contact-alert-error");
+      if (isHtml) {
+        alertBox.innerHTML = message;
+      } else {
+        alertBox.textContent = message;
+      }
+      alertBox.style.display = "block";
+      alertBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function hideAlert() {
+      if (!alertBox) return;
+      alertBox.style.display = "none";
+    }
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+      hideAlert();
+
+      const name = (document.getElementById("contact-name")?.value || "").trim();
+      const email = (document.getElementById("contact-email")?.value || "").trim();
+      const subject = (document.getElementById("contact-subject")?.value || "").trim();
+      const message = (document.getElementById("contact-message")?.value || "").trim();
+
+      if (!name || name.length < 2) {
+        showAlert("error", "Пожалуйста, введите ваше имя (не менее 2 символов).");
+        return;
+      }
+      if (!email || !email.includes("@")) {
+        showAlert("error", "Пожалуйста, введите корректный адрес электронной почты.");
+        return;
+      }
+      if (!subject || subject.length < 5) {
+        showAlert("error", "Пожалуйста, укажите тему сообщения (не менее 5 символов).");
+        return;
+      }
+      if (!message || message.length < 5) {
+        showAlert("error", "Пожалуйста, напишите сообщение (не менее 5 символов).");
+        return;
+      }
+
+      let recaptchaToken = null;
+      if (typeof grecaptcha !== "undefined" && typeof grecaptcha.getResponse === "function") {
+        recaptchaToken = grecaptcha.getResponse();
+        if (!recaptchaToken) {
+          showAlert("error", "Пожалуйста, подтвердите reCAPTCHA («Я не робот»).");
+          return;
+        }
+      }
+
+      // UI loading state
+      if (submitBtn) submitBtn.disabled = true;
+      if (btnText) btnText.textContent = "Отправка...";
+      if (btnSpinner) btnSpinner.style.display = "inline";
+
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            name: name,
+            email: email,
+            subject: subject || null,
+            message: message,
+            recaptcha_token: recaptchaToken
+          })
+        });
+
+        const data = await response.json().catch(() => ({}));
+
+        if (response.ok && data.success) {
+          const ackHtml = `
+            <div style="display: flex; align-items: flex-start; gap: 14px;">
+              <span style="display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: rgba(16, 185, 129, 0.25); color: #34d399; font-size: 22px; font-weight: bold; flex-shrink: 0; box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);">✓</span>
+              <div>
+                <strong style="display: block; font-size: 1.15rem; color: #ffffff; margin-bottom: 6px; letter-spacing: 0.01em;">Подтверждение: сообщение успешно принято!</strong>
+                <p style="margin: 0 0 6px 0; line-height: 1.55; color: #a7f3d0; font-size: 1rem;">${data.message || 'Спасибо за обращение! Ваше сообщение принято в обработку.'}</p>
+                <span style="display: block; font-size: 0.875rem; color: #6ee7b7; opacity: 0.9;">Ваше обращение сохранено в базе данных и принято к рассмотрению.</span>
+              </div>
+            </div>
+          `;
+          showAlert("success", ackHtml, true);
+          form.reset();
+          if (typeof grecaptcha !== "undefined" && typeof grecaptcha.reset === "function") {
+            try { grecaptcha.reset(); } catch (e) {}
+          }
+        } else {
+          const detail = data.detail || data.message || "Не удалось отправить сообщение. Пожалуйста, попробуйте позже.";
+          showAlert("error", detail);
+        }
+      } catch (err) {
+        showAlert("error", "Сетевая ошибка при отправке сообщения. Проверьте соединение и попробуйте снова.");
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (btnText) btnText.textContent = "Отправить сообщение";
+        if (btnSpinner) btnSpinner.style.display = "none";
+      }
+    });
+  })();
+</script>
+{% endblock %}
