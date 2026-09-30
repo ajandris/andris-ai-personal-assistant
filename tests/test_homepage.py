@@ -93,16 +93,25 @@ def test_experience_page_route():
     assert '<p class="timeline-role">Операционная работа</p>' in response.text
     assert "и координация процессов" not in response.text
     assert "Архивные материалы и детальная хронология проектов подготавливаются к публикации" not in response.text
-    assert "Дополнительные сведения о проектах подразделений будут добавлены" not in response.text
-    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' in response.text
-    assert 'download="Andris_Jancevskis_CV_September_2026.pdf"' in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf"' in response.text
+    assert 'download="Andris_Jancevskis_CV_September_2026_RU.pdf"' in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' not in response.text
     assert "Скачать CV (PDF)" in response.text
 
 
 def test_cv_pdf_file_downloadable():
-    """Файл резюме доступен для скачивания по URL /media/docs/..."""
+    """Файл резюме на английском доступен для скачивания по URL /media/docs/..."""
     client = TestClient(app)
     response = client.get("/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf")
+    assert response.status_code == 200
+    assert response.headers.get("content-type") == "application/pdf"
+    assert len(response.content) > 0
+
+
+def test_cv_ru_pdf_file_downloadable():
+    """Файл резюме на русском доступен для скачивания по URL /media/docs/..."""
+    client = TestClient(app)
+    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf")
     assert response.status_code == 200
     assert response.headers.get("content-type") == "application/pdf"
     assert len(response.content) > 0
@@ -117,10 +126,11 @@ def test_skills_page_route():
     assert response.status_code == 200
     assert "Навыки" in response.text
     assert 'id="skills"' in response.text
-    assert '<li class="skill-pill">Embeddings</li>' in response.text
+    assert '<li class="skill-pill">RAG</li>' in response.text
     assert '<li class="skill-pill">Системный анализ</li>' in response.text
     assert '<li class="skill-pill">Управление проектами</li>' in response.text
     assert "бизнес-анализ" not in response.text
+    assert '<li class="skill-pill">Embeddings</li>' not in response.text
     assert '<li class="skill-pill">embeddings</li>' not in response.text
     assert '<li class="skill-pill">системный анализ</li>' not in response.text
 
@@ -156,6 +166,8 @@ def test_portfolio_page_route():
     assert "https://ajandris.github.io/tic-tac-toe/" in response.text
     assert "https://theoldechristmasmarket.p.jancevskis.com/" in response.text
     assert "https://www.candlemania.p.jancevskis.com/" in response.text
+    assert "https://github.com/ajandris/postgres_db_desc" in response.text
+    assert "https://github.com/ajandris/TheDecisionPoint" in response.text
 
 
 def test_ai_assistant_page_route():
@@ -288,6 +300,9 @@ def test_contact_page_route():
     assert 'id="contact"' in response.text
     assert "Обсудить с AI-ассистентом" in response.text
     assert "https://github.com/ajandris" in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf"' in response.text
+    assert 'download="Andris_Jancevskis_CV_September_2026_RU.pdf"' in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' not in response.text
 
 
 def test_contacts_alias_route():
