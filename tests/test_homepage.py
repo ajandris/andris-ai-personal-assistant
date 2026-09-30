@@ -185,3 +185,40 @@ def test_css_contains_active_menu_item_styles():
     assert ".nav-link.active" in response.text
     assert 'aria-current="page"' in response.text
 
+
+def test_homepage_contains_favicon_links():
+    """Главная страница содержит ссылки на фавиконки в <head>."""
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert 'rel="icon" type="image/svg+xml" href="/static/images/favicon.svg"' in response.text
+    assert 'rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32x32.png"' in response.text
+    assert 'rel="icon" type="image/png" sizes="16x16" href="/static/images/favicon-16x16.png"' in response.text
+    assert 'rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon.png"' in response.text
+    assert 'rel="shortcut icon" href="/static/images/favicon.ico"' in response.text
+
+
+def test_favicon_ico_route():
+    """Маршрут /favicon.ico доступен и возвращает иконку."""
+    client = TestClient(app)
+    response = client.get("/favicon.ico")
+    assert response.status_code == 200
+    assert len(response.content) > 0
+
+
+def test_static_favicons_accessible():
+    """Файлы фавиконок доступны через /static/images."""
+    client = TestClient(app)
+    for path in [
+        "/static/images/favicon.svg",
+        "/static/images/favicon-32x32.png",
+        "/static/images/favicon-16x16.png",
+        "/static/images/apple-touch-icon.png",
+        "/static/images/favicon.ico",
+    ]:
+        response = client.get(path)
+        assert response.status_code == 200
+        assert len(response.content) > 0
+
+
+

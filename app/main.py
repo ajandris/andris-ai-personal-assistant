@@ -1,5 +1,6 @@
 from pathlib import Path
 from fastapi import FastAPI, Request
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -23,6 +24,12 @@ app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
 # Шаблонизатор Jinja2
 templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Отдача favicon.ico для браузеров."""
+    return FileResponse(STATIC_DIR / "images" / "favicon.ico")
 
 
 @app.get("/", summary="Главная страница")
