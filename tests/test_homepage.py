@@ -90,6 +90,24 @@ def test_experience_page_route():
     assert response.status_code == 200
     assert "Опыт работы" in response.text
     assert 'id="experience"' in response.text
+    assert '<p class="timeline-role">Операционная работа</p>' in response.text
+    assert "и координация процессов" not in response.text
+    assert "Архивные материалы и детальная хронология проектов подготавливаются к публикации" not in response.text
+    assert "Дополнительные сведения о проектах подразделений будут добавлены" not in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' in response.text
+    assert 'download="Andris_Jancevskis_CV_September_2026.pdf"' in response.text
+    assert "Скачать CV (PDF)" in response.text
+
+
+def test_cv_pdf_file_downloadable():
+    """Файл резюме доступен для скачивания по URL /media/docs/..."""
+    client = TestClient(app)
+    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf")
+    assert response.status_code == 200
+    assert response.headers.get("content-type") == "application/pdf"
+    assert len(response.content) > 0
+
+
 
 
 def test_skills_page_route():
@@ -219,6 +237,37 @@ def test_static_favicons_accessible():
         response = client.get(path)
         assert response.status_code == 200
         assert len(response.content) > 0
+
+
+def test_homepage_removed_diploma_badge_and_automation_card():
+    """На главной странице удалены упоминания дипломного проекта и карточка автоматизации данных."""
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Дипломный проект по разработке AI-агентов" not in response.text
+    assert "Дипломный проект:" not in response.text
+    assert "Автоматизация обработки данных" not in response.text
+
+
+
+def test_homepage_contact_section_ai_button():
+    """В секции контактов размещена кнопка «Обсудить с AI-ассистентом» со ссылкой на /ai-assistant."""
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "Подтверждённые прямые контактные данные подготавливаются к публикации" not in response.text
+    assert 'href="/ai-assistant" class="btn btn-primary"' in response.text
+    assert "Обсудить с AI-ассистентом" in response.text
+
+
+def test_media_docs_accessible():
+    """Каталог /media/docs подключен и доступен для статических файлов."""
+    client = TestClient(app)
+    response = client.get("/media/docs/.gitkeep")
+    assert response.status_code == 200
+
+
+
 
 
 
