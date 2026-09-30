@@ -117,15 +117,27 @@ def test_skills_page_route():
     assert response.status_code == 200
     assert "Навыки" in response.text
     assert 'id="skills"' in response.text
+    assert '<li class="skill-pill">Embeddings</li>' in response.text
+    assert '<li class="skill-pill">Системный анализ</li>' in response.text
+    assert '<li class="skill-pill">Управление проектами</li>' in response.text
+    assert "бизнес-анализ" not in response.text
+    assert '<li class="skill-pill">embeddings</li>' not in response.text
+    assert '<li class="skill-pill">системный анализ</li>' not in response.text
+
 
 
 def test_education_page_route():
-    """GET /education возвращает страницу образования и обучения."""
+    """GET /education возвращает страницу образования и обучения с карточкой Vibe Coder на 3-м месте."""
     client = TestClient(app)
     response = client.get("/education")
     assert response.status_code == 200
     assert "Образование и обучение" in response.text
     assert 'id="education"' in response.text
+    idx_aiml = response.text.index("AI/ML Developer")
+    idx_agents = response.text.index("AI Agents Developer")
+    idx_vibe = response.text.index("Vibe Coder")
+    assert idx_aiml < idx_agents < idx_vibe
+
 
 
 def test_portfolio_page_route():
