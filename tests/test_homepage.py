@@ -93,16 +93,16 @@ def test_experience_page_route():
     assert '<p class="timeline-role">Операционная работа</p>' in response.text
     assert "и координация процессов" not in response.text
     assert "Архивные материалы и детальная хронология проектов подготавливаются к публикации" not in response.text
-    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf"' in response.text
-    assert 'download="Andris_Jancevskis_CV_September_2026_RU.pdf"' in response.text
-    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' not in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web%20RU.pdf"' in response.text
+    assert 'download="Andris_Jancevskis_CV_October_2026_RU.pdf"' in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web.pdf"' not in response.text
     assert "Скачать CV (PDF)" in response.text
 
 
 def test_cv_pdf_file_downloadable():
     """Файл резюме на английском доступен для скачивания по URL /media/docs/..."""
     client = TestClient(app)
-    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf")
+    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web.pdf")
     assert response.status_code == 200
     assert response.headers.get("content-type") == "application/pdf"
     assert len(response.content) > 0
@@ -111,7 +111,7 @@ def test_cv_pdf_file_downloadable():
 def test_cv_ru_pdf_file_downloadable():
     """Файл резюме на русском доступен для скачивания по URL /media/docs/..."""
     client = TestClient(app)
-    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf")
+    response = client.get("/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web%20RU.pdf")
     assert response.status_code == 200
     assert response.headers.get("content-type") == "application/pdf"
     assert len(response.content) > 0
@@ -300,9 +300,9 @@ def test_contact_page_route():
     assert 'id="contact"' in response.text
     assert "Обсудить с AI-ассистентом" in response.text
     assert "https://github.com/ajandris" in response.text
-    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web%20RU.pdf"' in response.text
-    assert 'download="Andris_Jancevskis_CV_September_2026_RU.pdf"' in response.text
-    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20September%202026%20web.pdf"' not in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web%20RU.pdf"' in response.text
+    assert 'download="Andris_Jancevskis_CV_October_2026_RU.pdf"' in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web.pdf"' not in response.text
 
 
 def test_contacts_alias_route():
