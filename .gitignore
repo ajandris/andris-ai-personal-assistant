@@ -229,5 +229,9 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 data/qdrant/
+rag/*
+!rag/.gitkeep
+*.faiss
+*.index
 *.db
 *.sqlite3
