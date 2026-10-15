@@ -52,6 +52,22 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    @property
+    def effective_llm_model(self) -> str:
+        """Return usable OpenAI model name, falling back to gpt-4o-mini."""
+        val = (self.llm_model or "").strip()
+        if not val or val.lower() in ("openai", "default"):
+            return "gpt-4o-mini"
+        return val
+
+    @property
+    def effective_embedding_model(self) -> str:
+        """Return usable OpenAI embedding model name, falling back to text-embedding-3-small."""
+        val = (self.embedding_model or "").strip()
+        if not val or val.lower() in ("openai", "default"):
+            return "text-embedding-3-small"
+        return val
+
 
 @lru_cache
 def get_settings() -> Settings:

@@ -62,8 +62,8 @@ def test_static_js_accessible():
     assert "initAIAssistantChat" in response.text
 
 
-def test_api_chat_honest_notice():
-    """POST /api/chat возвращает честное сообщение о подготовке интеграции."""
+def test_api_chat_sales_agent():
+    """POST /api/chat возвращает ответ Sales AI-ассистента и подтверждённые RAG-источники."""
     client = TestClient(app)
     response = client.post(
         "/api/chat",
@@ -71,8 +71,10 @@ def test_api_chat_honest_notice():
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["status"] == "preparing"
-    assert "Подключение AI-ассистента подготавливается" in data["reply"]
+    assert data["status"] == "ok"
+    assert len(data["reply"]) > 10
+    assert "sources" in data
+    assert isinstance(data["sources"], list)
 
 
 def test_homepage_uses_base_template():

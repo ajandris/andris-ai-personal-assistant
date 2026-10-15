@@ -1,33 +1,50 @@
 {% extends "base.html" %}
 
-{% block title %}AI-ассистент — {{ settings.app_name }}{% endblock %}
+{% block title %}AI Sales-ассистент по компетенциям — {{ settings.app_name }}{% endblock %}
 
 {% block content %}
-    <!-- AI-ассистент -->
+    <!-- AI Sales-ассистент -->
     <section class="section assistant-section" id="ai-assistant">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag section-tag-ai">✦ Интерактивный компонент</span>
-          <h2 class="section-title">AI-ассистент</h2>
+          <span class="section-tag section-tag-ai">✦ Интерактивный AI Sales Agent</span>
+          <h2 class="section-title">AI-ассистент по компетенциям</h2>
           <p class="section-description">
-            Специализированный интерфейс для анализа профессионального профиля Андриса Янчевскиса
+            Опишите требования вашей вакансии или проекта, и ассистент сопоставит их с подтверждённым опытом Андриса Янчевскиса
           </p>
         </div>
 
         <div class="assistant-wrapper">
           <!-- Панель чата -->
-          <div class="chat-container" role="region" aria-label="Чат с AI-ассистентом">
+          <div class="chat-container" role="region" aria-label="Чат с AI Sales-ассистентом">
             <div class="chat-header">
               <div class="chat-header-info">
                 <span class="chat-avatar" aria-hidden="true">✦</span>
                 <div>
-                  <h3 class="chat-title">Ассистент по компетенциям</h3>
-                  <span class="chat-status">Подготовка интеграции</span>
+                  <h3 class="chat-title">Sales &amp; Competency Agent</h3>
+                  <span class="chat-status" id="chat-live-status">
+                    <span class="status-indicator-dot" aria-hidden="true"></span>
+                    Активен • OpenAI + FAISS RAG
+                  </span>
                 </div>
               </div>
               <div class="chat-meta">
-                <span class="tag-status-preparing">MVP 0.3.0</span>
+                <button type="button" class="btn-quick-lead" id="btn-open-lead-modal" title="Оставить контакты для связи">
+                  <span>✉️ Связаться с Андрисом</span>
+                </button>
               </div>
+            </div>
+
+            <!-- Баннер подтверждения отправки лида -->
+            <div class="lead-notification-banner" id="lead-notification-banner" hidden>
+              <div class="lead-banner-content">
+                <span class="banner-icon" aria-hidden="true">🎉</span>
+                <div>
+                  <strong>Контакты и требования успешно отправлены!</strong>
+                  <p id="lead-banner-text">Запрос направлен на личную почту Андриса Янчевскиса. Он свяжется с вами в ближайшее время.</p>
+                </div>
+              </div>
+              <button type="button" class="lead-banner-close" id="btn-close-banner" aria-label="Закрыть уведомление">✕</button>
             </div>
 
             <!-- Область сообщений -->
@@ -35,36 +52,36 @@
               <div class="message message-system">
                 <div class="message-bubble">
                   <p>
-                    Здравствуйте! Я спроектирован для ответов на вопросы о подтверждённом опыте, навыках, образовании и проектах Андриса Янчевскиса.
+                    <strong>Здравствуйте! Я персональный Sales AI-ассистент Андриса Янчевскиса.</strong>
+                  </p>
+                  <p>
+                    Я помогу сравнить требования вашей вакансии, проекта или задачи с реальными подтверждёнными компетенциями Андриса (Python, FastAPI, Django, PostgreSQL, SQL, RAG/LLM, системный анализ и PRINCE2).
                   </p>
                   <p class="message-subtext">
-                    Вы можете выбрать пример вопроса ниже или ввести свой вопрос в поле ввода.
+                    💡 <em>Опишите ваши задачи или выберите пример запроса ниже. В любой момент вы можете оставить контактные данные — я сразу передам их лично Андрису на почту!</em>
                   </p>
                 </div>
               </div>
             </div>
 
-            <!-- Будущая область источников -->
-            <div class="sources-panel" id="sources-panel" aria-label="Подтверждённые источники ответа" hidden>
-              <h4 class="sources-title">Источники контекста:</h4>
-              <ul class="sources-list" id="sources-list"></ul>
-            </div>
-
-            <!-- Примеры вопросов -->
+            <!-- Примеры вопросов и сопоставления требований -->
             <div class="prompt-chips-wrapper">
-              <span class="chips-label">Примеры вопросов:</span>
+              <span class="chips-label">Примеры запросов для сопоставления:</span>
               <div class="prompt-chips" role="group" aria-label="Примеры вопросов для ассистента">
-                <button type="button" class="chip-btn" data-question="Какой у Андриса опыт разработки на Python?">
-                  Какой у Андриса опыт разработки на Python?
+                <button type="button" class="chip-btn" data-question="Ищем Python-разработчика со знанием FastAPI и RAG-систем для AI-проекта. Подходит ли опыт Андриса?">
+                  💼 Вакансия: Python, FastAPI &amp; RAG AI
                 </button>
-                <button type="button" class="chip-btn" data-question="Какие проекты демонстрируют знание Django?">
-                  Какие проекты демонстрируют знание Django?
+                <button type="button" class="chip-btn" data-question="Требуется специалист по базам данных: оптимизация PostgreSQL, сложные SQL-запросы и системный анализ. Что может предложить Андрис?">
+                  🗄️ Базы данных: PostgreSQL &amp; SQL
                 </button>
-                <button type="button" class="chip-btn" data-question="Подходит ли опыт Андриса для моего проекта?">
-                  Подходит ли опыт Андриса для моего проекта?
+                <button type="button" class="chip-btn" data-question="Есть ли у Андриса подтверждённый опыт разработки веб-сервисов и интернет-магазинов на Django?">
+                  🛍️ Веб-сервисы и E-commerce на Django
                 </button>
-                <button type="button" class="chip-btn" data-question="Какое у Андриса образование в области IT и AI?">
-                  Какое у Андриса образование в области IT и AI?
+                <button type="button" class="chip-btn" data-question="Какое у Андриса академическое образование и международные сертификаты в IT и AI?">
+                  🎓 Образование, степени и PRINCE2
+                </button>
+                <button type="button" class="chip-btn chip-btn-contact" data-action="open-contact">
+                  ✉️ Оставить контакты для связи с Андрисом
                 </button>
               </div>
             </div>
@@ -72,13 +89,13 @@
             <!-- Форма отправки вопроса -->
             <form class="chat-form" id="chat-form">
               <div class="input-group">
-                <label for="chat-input" class="visually-hidden">Ваш вопрос об опыте Андриса Янчевскиса</label>
+                <label for="chat-input" class="visually-hidden">Ваш запрос или требования к кандидату</label>
                 <input
                   type="text"
                   id="chat-input"
                   name="message"
                   class="chat-input"
-                  placeholder="Задайте вопрос об опыте, навыках или проектах..."
+                  placeholder="Опишите требования вакансии, задачи или задайте вопрос..."
                   required
                   autocomplete="off"
                 >
@@ -91,28 +108,53 @@
             </form>
           </div>
 
-          <!-- Архитектурная подсказка для дипломного проекта -->
+          <!-- Архитектурная карточка RAG и Sales Agent -->
           <div class="assistant-info-card">
-            <h3 class="info-card-title">Принцип работы будущей версии</h3>
+            <h3 class="info-card-title">Как работает Sales AI-ассистент</h3>
             <ol class="flow-steps">
               <li>
-                <strong>Анализ намерения:</strong> Первое обращение к LLM определяет суть вопроса и формирует поисковые термины.
+                <strong>Сопоставление требований:</strong> Вы описываете стек, роль или проект. Ассистент проводит детальный матчинг.
               </li>
               <li>
-                <strong>Векторный поиск RAG:</strong> Поиск релевантных подтверждённых чанков в базе знаний FAISS.
+                <strong>Векторный RAG-поиск:</strong> Поиск релевантных фактов в векторной базе <strong>FAISS</strong> по 21 подтверждённому документу.
               </li>
               <li>
-                <strong>Синтез ответа:</strong> Второе обращение к LLM генерирует ответ строго на основе найденного контекста.
+                <strong>Честный анализ OpenAI:</strong> Модель <strong>{{ settings.effective_llm_model }}</strong> структурирует ответ: прямые совпадения, смежные навыки, честные ограничения и ссылки на GitHub.
               </li>
               <li>
-                <strong>Прозрачность:</strong> Отображение ссылок на первоисточники и честный отказ при отсутствии данных.
+                <strong>Мгновенная доставка лида:</strong> При предоставлении контактов ассистент отправляет уведомление прямо на почту Андриса.
               </li>
             </ol>
-            <div class="notice-box">
-              <span class="notice-icon" aria-hidden="true">ℹ</span>
-              <p>
-                В текущей итерации внешние LLM и векторные базы не опрашиваются. При попытке отправки система показывает честное информационное сообщение.
-              </p>
+
+            <div class="sources-provenance-box">
+              <h4 class="provenance-title">Подтверждённые источники RAG:</h4>
+              <ul class="provenance-list">
+                <li><span class="bullet-dot"></span> <strong>Сайт:</strong> Разделы «Опыт», «Навыки», «Обучение», «Услуги»</li>
+                <li><span class="bullet-dot"></span> <strong>GitHub (@ajandris):</strong> TheDecisionPoint, postgres_db_desc, candlemania, simpleshop</li>
+                <li><span class="bullet-dot"></span> <strong>Резюме (CV 2026):</strong> 16 лет IT в Латвии, Boots Alliance, The Open University BSc, Wrexham PgDip</li>
+              </ul>
+            </div>
+
+            <!-- Быстрая форма отправки контактов -->
+            <div class="quick-contact-card" id="quick-contact-card">
+              <h4 class="quick-contact-title">✉️ Запрос на обсуждение проекта</h4>
+              <p class="quick-contact-desc">Оставьте контакты, и Андрис лично свяжется с вами:</p>
+              <form id="direct-lead-form" class="direct-lead-form">
+                <div class="form-row-compact">
+                  <input type="text" id="lead-name" class="compact-input" placeholder="Ваше имя *" required>
+                  <input type="email" id="lead-email" class="compact-input" placeholder="Email для связи *" required>
+                </div>
+                <div class="form-row-compact">
+                  <input type="text" id="lead-phone" class="compact-input" placeholder="Телефон или Telegram (опционально)">
+                </div>
+                <div class="form-row-compact">
+                  <textarea id="lead-demands" class="compact-textarea" rows="2" placeholder="Краткое описание вакансии или проекта..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-submit-lead" id="lead-submit-btn">
+                  <span>Отправить контакты Андрису</span>
+                  <span aria-hidden="true">→</span>
+                </button>
+              </form>
             </div>
           </div>
         </div>

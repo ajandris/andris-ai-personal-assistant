@@ -9,3 +9,5 @@ pytest
 httpx
 faiss-cpu
 numpy
+openai
+pypdf

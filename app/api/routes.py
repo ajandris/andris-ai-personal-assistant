@@ -1,6 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from app.core.config import Settings, get_settings
-from app.schemas.chat import ChatRequest, ChatResponse
+from app.schemas.chat import (
+    ChatRequest,
+    ChatResponse,
+    LeadCaptureRequest,
+    LeadCaptureResponse,
+)
 from app.schemas.contact import ContactFormRequest, ContactFormResponse
 from app.services.contact_service import (
     mark_email_sent,
@@ -9,13 +14,9 @@ from app.services.contact_service import (
     send_smtp_email_async,
     verify_recaptcha,
 )
+from app.services.sales_agent import sales_agent_service
 
 router = APIRouter()
-
-PREPARING_NOTICE = (
-    "Подключение AI-ассистента подготавливается. В следующей версии он сможет отвечать "
-    "на вопросы о профессиональном опыте, навыках, образовании и проектах Андриса Янчевскиса."
-)
 
 
 @router.get("/health", summary="Проверка состояния сервиса")
@@ -30,14 +31,27 @@ async def health_check(settings: Settings = Depends(get_settings)) -> dict:
 @router.post(
     "/api/chat",
     response_model=ChatResponse,
-    summary="Интерфейс обращения к AI-ассистенту",
+    summary="Интерфейс обращения к AI Sales-ассистенту",
 )
-async def chat_endpoint(request: ChatRequest) -> ChatResponse:
-    """Честное уведомление о том, что AI-интеграция подготавливается."""
-    return ChatResponse(
-        reply=PREPARING_NOTICE,
-        status="preparing",
-    )
+async def chat_endpoint(
+    request: ChatRequest,
+    settings: Settings = Depends(get_settings),
+) -> ChatResponse:
+    """Обработка запроса через RAG (OpenAI + FAISS), матчинг требований и сбор контактов."""
+    return await sales_agent_service.process_chat(request, settings=settings)
+
+
+@router.post(
+    "/api/chat/lead",
+    response_model=LeadCaptureResponse,
+    summary="Отправка контактных данных посетителя из виджета чата",
+)
+async def chat_lead_endpoint(
+    lead: LeadCaptureRequest,
+    settings: Settings = Depends(get_settings),
+) -> LeadCaptureResponse:
+    """Сохранение лида в базу данных и отправка уведомления на настроенный email."""
+    return await sales_agent_service.capture_direct_lead(lead, settings=settings)
 
 
 @router.post(
