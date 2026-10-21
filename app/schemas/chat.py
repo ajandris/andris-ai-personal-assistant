@@ -47,6 +47,7 @@ class LeadCaptureRequest(BaseModel):
     phone: Optional[str] = Field(default=None, description="Телефон или Telegram")
     demands: Optional[str] = Field(default=None, description="Требования к вакансии или описание проекта")
     notes: Optional[str] = Field(default=None, description="Дополнительный комментарий")
+    recaptcha_token: Optional[str] = Field(default=None, description="Google reCAPTCHA token")
 
 
 class LeadCaptureResponse(BaseModel):

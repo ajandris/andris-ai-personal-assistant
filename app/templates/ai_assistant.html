@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}AI Sales-ассистент по компетенциям — {{ settings.app_name }}{% endblock %}
+{% block extra_head %}
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+{% endblock %}
 
 {% block content %}
-    <!-- AI Sales-ассистент -->
+    <!-- AI-ассистент -->
     <section class="section assistant-section" id="ai-assistant">
       <div class="container">
         <div class="section-header">
-          <span class="section-tag section-tag-ai">✦ Интерактивный AI Sales Agent</span>
+          <span class="section-tag section-tag-ai">✦ Интерактивный AI Agent</span>
           <h2 class="section-title">AI-ассистент по компетенциям</h2>
           <p class="section-description">
             Опишите требования вашей вакансии или проекта, и ассистент сопоставит их с подтверждённым опытом Андриса Янчевскиса
@@ -16,12 +18,12 @@
 
         <div class="assistant-wrapper">
           <!-- Панель чата -->
-          <div class="chat-container" role="region" aria-label="Чат с AI Sales-ассистентом">
+          <div class="chat-container" role="region" aria-label="Чат с AI-ассистентом">
             <div class="chat-header">
               <div class="chat-header-info">
                 <span class="chat-avatar" aria-hidden="true">✦</span>
                 <div>
-                  <h3 class="chat-title">Sales &amp; Competency Agent</h3>
+                  <h3 class="chat-title">AI &amp; Competency Agent</h3>
                   <span class="chat-status" id="chat-live-status">
                     <span class="status-indicator-dot" aria-hidden="true"></span>
                     Активен • OpenAI + FAISS RAG
@@ -52,7 +54,7 @@
               <div class="message message-system">
                 <div class="message-bubble">
                   <p>
-                    <strong>Здравствуйте! Я персональный Sales AI-ассистент Андриса Янчевскиса.</strong>
+                    <strong>Здравствуйте! Я персональный AI-ассистент Андриса Янчевскиса.</strong>
                   </p>
                   <p>
                     Я помогу сравнить требования вашей вакансии, проекта или задачи с реальными подтверждёнными компетенциями Андриса (Python, FastAPI, Django, PostgreSQL, SQL, RAG/LLM, системный анализ и PRINCE2).
@@ -108,9 +110,9 @@
             </form>
           </div>
 
-          <!-- Архитектурная карточка RAG и Sales Agent -->
+          <!-- Архитектурная карточка RAG и AI Agent -->
           <div class="assistant-info-card">
-            <h3 class="info-card-title">Как работает Sales AI-ассистент</h3>
+            <h3 class="info-card-title">Как работает AI-ассистент</h3>
             <ol class="flow-steps">
               <li>
                 <strong>Сопоставление требований:</strong> Вы описываете стек, роль или проект. Ассистент проводит детальный матчинг.
@@ -139,6 +141,10 @@
             <div class="quick-contact-card" id="quick-contact-card">
               <h4 class="quick-contact-title">✉️ Запрос на обсуждение проекта</h4>
               <p class="quick-contact-desc">Оставьте контакты, и Андрис лично свяжется с вами:</p>
+
+              <!-- Блок статуса отправки карточки -->
+              <div id="lead-card-alert" class="contact-alert" style="display: none; padding: var(--space-3) var(--space-4); font-size: var(--font-size-xs); margin-bottom: var(--space-3); border-radius: var(--radius-sm);" role="alert"></div>
+
               <form id="direct-lead-form" class="direct-lead-form">
                 <div class="form-row-compact">
                   <input type="text" id="lead-name" class="compact-input" placeholder="Ваше имя *" required>
@@ -148,11 +154,22 @@
                   <input type="text" id="lead-phone" class="compact-input" placeholder="Телефон или Telegram (опционально)">
                 </div>
                 <div class="form-row-compact">
-                  <textarea id="lead-demands" class="compact-textarea" rows="2" placeholder="Краткое описание вакансии или проекта..."></textarea>
+                  <textarea id="lead-demands" class="compact-textarea" rows="5" placeholder="Краткое описание вакансии или проекта..."></textarea>
                 </div>
+
+                <div class="form-group recaptcha-wrapper lead-recaptcha-wrapper" style="margin-top: var(--space-2);">
+                  <label class="form-label" style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; display: block;">
+                    Подтверждение безопасности <span class="required" aria-hidden="true">*</span>
+                  </label>
+                  <div class="recaptcha-box" style="transform: scale(0.88); transform-origin: 0 0; margin-bottom: -8px;">
+                    <div class="g-recaptcha" id="lead-recaptcha" data-sitekey="{{ settings.recaptcha_site_key or '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }}" data-theme="dark"></div>
+                  </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary btn-submit-lead" id="lead-submit-btn">
-                  <span>Отправить контакты Андрису</span>
-                  <span aria-hidden="true">→</span>
+                  <span class="btn-text">Отправить контакты Андрису</span>
+                  <span class="btn-arrow" aria-hidden="true">→</span>
+                  <span class="btn-spinner" style="display: none;" aria-hidden="true"> ⏳</span>
                 </button>
               </form>
             </div>

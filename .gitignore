@@ -230,7 +230,8 @@ __pycache__/
 .pytest_cache/
 data/qdrant/
 rag/*
-!rag/.gitkeep
+#!rag/.gitkeep
+#rag/knowledge_base/
 *.faiss
 *.index
 *.db

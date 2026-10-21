@@ -82,3 +82,72 @@ def test_faiss_save_and_load(tmp_path: Path):
     res = loaded_store.search([0.0, 1.0, 0.0], top_k=1)
     assert len(res) == 1
     assert res[0]["id"] == 2
+
+
+def test_rag_knowledge_base_folder_and_file_exist():
+    """Проверка, что папка rag/knowledge_base и файл базы знаний Markdown существуют."""
+    from scripts.build_rag_knowledge_base import (
+        DEFAULT_KNOWLEDGE_BASE_MD,
+        KNOWLEDGE_BASE_DIR,
+        load_knowledge_base,
+    )
+
+    assert KNOWLEDGE_BASE_DIR.exists()
+    assert KNOWLEDGE_BASE_DIR.is_dir()
+    assert DEFAULT_KNOWLEDGE_BASE_MD.exists()
+
+    docs = load_knowledge_base()
+    assert isinstance(docs, list)
+    assert len(docs) >= 20
+
+    first_doc = docs[0]
+    for required_key in ["id", "category", "source", "url", "title", "tags", "text"]:
+        assert required_key in first_doc
+
+
+def test_markdown_knowledge_base_parser(tmp_path: Path):
+    """Проверка парсинга базы знаний в формате Markdown."""
+    from scripts.build_rag_knowledge_base import (
+        load_knowledge_base,
+        parse_markdown_knowledge_base,
+    )
+
+    sample_md = """# Заголовок документа
+
+## Компетенции в AI и Python
+- **ID**: ai_python_skills
+- **Категория**: skills
+- **Источник**: Site & CV
+- **URL**: /skills
+- **Теги**: ai, python, fastapi, rag
+
+Андрис разрабатывает масштабируемые AI-решения на Python и FastAPI.
+Реализована поддержка RAG и векторного поиска.
+"""
+    parsed = parse_markdown_knowledge_base(sample_md)
+    assert len(parsed) == 1
+    doc = parsed[0]
+    assert doc["id"] == "ai_python_skills"
+    assert doc["category"] == "skills"
+    assert doc["source"] == "Site & CV"
+    assert doc["url"] == "/skills"
+    assert doc["title"] == "Компетенции в AI и Python"
+    assert "fastapi" in doc["tags"]
+    assert "Андрис разрабатывает масштабируемые AI-решения" in doc["text"]
+
+    target_md = tmp_path / "custom_kb.md"
+    target_md.write_text(sample_md, encoding="utf-8")
+    reloaded = load_knowledge_base(target_md)
+    assert len(reloaded) == 1
+    assert reloaded[0]["id"] == "ai_python_skills"
+    assert reloaded[0]["text"] == doc["text"]
+
+
+def test_rag_knowledge_base_exempt_from_git():
+    """Проверка, что rag/* исключает rag/knowledge_base/ из системы контроля версий Git."""
+    gitignore_path = Path(__file__).resolve().parent.parent / ".gitignore"
+    content = gitignore_path.read_text(encoding="utf-8")
+    assert "rag/*" in content
+
+
+

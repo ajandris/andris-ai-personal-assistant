@@ -135,7 +135,7 @@ class SalesAgentService:
         if contact_captured:
             contact_str = f"Email: {contact_email or 'Не указан'}, Телефон/Телеграм: {contact_phone or 'Не указан'}"
             full_lead_message = (
-                f"Новый лид от Sales AI-ассистента!\n\n"
+                f"Новый лид от AI-ассистента!\n\n"
                 f"Имя: {contact_name}\n"
                 f"Контакты: {contact_str}\n"
                 f"Последнее сообщение / запрос посетителя:\n{user_message}\n"
@@ -144,7 +144,7 @@ class SalesAgentService:
                 msg_id = save_message_to_db(
                     name=contact_name,
                     email_addr=contact_email or "unknown@lead.assistant",
-                    subject=f"[AI Sales Lead] Контакты от {contact_name}",
+                    subject=f"[AI Lead] Контакты от {contact_name}",
                     message=full_lead_message,
                     settings=current_settings,
                 )
@@ -152,7 +152,7 @@ class SalesAgentService:
                     email_sent = await send_smtp_email_async(
                         name=f"{contact_name} (AI Lead)",
                         email_addr=contact_email or current_settings.smtp_from_email,
-                        subject=f"[AI Sales Lead] Новое обращение и контакты: {contact_name}",
+                        subject=f"[AI Lead] Новое обращение и контакты: {contact_name}",
                         message=full_lead_message,
                         settings=current_settings,
                     )
@@ -172,7 +172,7 @@ class SalesAgentService:
 
         # 4. Construct System Prompt and LLM completion
         system_prompt = (
-            "Ты — интеллектуальный Sales & Competency Agent (Sales-ассистент по компетенциям) Андриса Янчевскиса.\n"
+            "Ты — интеллектуальный AI & Competency Agent (AI-ассистент по компетенциям) Андриса Янчевскиса.\n"
             "Твоя задача — профессионально, доброжелательно и аргументированно помочь посетителю (рекрутеру, клиенту, "
             "техническому директору или основателю проекта) сопоставить его требования, задачи или вакансию с реальными "
             "подтверждёнными навыками, проектами и опытом Андриса Янчевскиса.\n\n"
@@ -230,7 +230,7 @@ class SalesAgentService:
         current_settings = settings or self.settings
 
         full_message = (
-            f"Новый лид из формы AI Sales-ассистента!\n\n"
+            f"Новый лид из формы AI-ассистента!\n\n"
             f"Имя: {lead.name}\n"
             f"Email: {lead.email}\n"
             f"Телефон/Telegram: {lead.phone or 'Не указан'}\n\n"
@@ -241,7 +241,7 @@ class SalesAgentService:
         msg_id = save_message_to_db(
             name=lead.name,
             email_addr=lead.email,
-            subject=f"[AI Sales Lead] Новая заявка: {lead.name}",
+            subject=f"[AI Lead] Новая заявка: {lead.name}",
             message=full_message,
             settings=current_settings,
         )
@@ -251,7 +251,7 @@ class SalesAgentService:
             email_sent = await send_smtp_email_async(
                 name=f"{lead.name} (Direct Lead)",
                 email_addr=lead.email,
-                subject=f"[AI Sales Lead] Новая заявка на сотрудничество от {lead.name}",
+                subject=f"[AI Lead] Новая заявка на сотрудничество от {lead.name}",
                 message=full_message,
                 settings=current_settings,
             )
@@ -266,7 +266,7 @@ class SalesAgentService:
                     f"Здравствуйте, {lead.name}!\n\n"
                     f"Благодарим за интерес к сотрудничеству с Андрисом Янчевскисом. "
                     f"Ваши требования и контакты успешно переданы. Андрис свяжется с вами в ближайшее время.\n\n"
-                    f"С уважением,\nAI Sales Agent Андриса Янчевскиса"
+                    f"С уважением,\nAI Agent Андриса Янчевскиса"
                 ),
                 settings=current_settings,
             )

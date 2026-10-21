@@ -20,16 +20,17 @@
 - Реализован пайплайн векторной индексации (`scripts/build_rag_knowledge_base.py`) с эмбеддингами `text-embedding-3-small` (1536 измерений) и косинусным поиском FAISS;
 - Sales Agent анализирует требования вакансий и проектов посетителей, сопоставляет их с реальными навыками Андриса, указывает прямые совпадения, смежные преимущества, честные ограничения и ссылки на проекты;
 - Реализован автоматический перехват контактов из текста диалога и через прямую форму лидогенерации с отправкой уведомлений на настроенный email (`SMTP_TO_EMAIL`);
-- Набор из 51 автоматического теста на **pytest** полностью покрывает работу сайта, API, базы знаний и отправку лидов.
+- Набор из 56 автоматических тестов на **pytest** полностью покрывает работу сайта, API, базы знаний и отправку лидов.
 
 ---
 
 ## 3. Технологический стек
 
-- **Бэкенд:** Python 3.12+, FastAPI, Uvicorn, Jinja2, Pydantic v2, pydantic-settings, python-dotenv.
+- **Бэкенд:** Python 3.12+, FastAPI, Uvicorn, Jinja2, Pydantic v2, pydantic-settings, python-dotenv, SQLite.
+- **AI / RAG стек:** OpenAI API (модели `gpt-4o-mini`, `text-embedding-3-small`), векторная база данных FAISS (косинусное сходство, `IndexFlatIP`), Markdown база знаний.
+- **Интеграции:** SMTP-уведомления (aiosmtplib/smtplib), Google reCAPTCHA v2/v3, ReportLab (генерация PDF).
 - **Фронтенд:** HTML5 (семантическая верстка, доступность ARIA), CSS3 (дизайн-система на CSS Custom Properties, адаптивная сетка, поддержка `prefers-reduced-motion`), нативный JavaScript (без сторонних тяжелых фреймворков).
 - **Тестирование:** pytest, httpx, TestClient.
-- **Будущий стек AI/RAG (этап 4):** OpenAI API / совместимый провайдер, модель эмбеддингов, векторная база данных FAISS (хранилище в директории `rag/`).
 
 ---
 
@@ -40,46 +41,59 @@ andris-ai-personal-assistant/
 ├── .venv/                         # Локальное виртуальное окружение (в Git не коммитится)
 ├── app/
 │   ├── __init__.py
-│   ├── main.py                    # Инициализация FastAPI, монтирование static и templates
+│   ├── main.py                    # Инициализация FastAPI, монтирование static, media и templates
 │   ├── api/
 │   │   ├── __init__.py
-│   │   └── routes.py              # Маршруты /health, /api/chat
+│   │   └── routes.py              # HTML-страницы, /health, /api/contact, /api/chat, /api/chat/lead
 │   ├── core/
 │   │   ├── __init__.py
-│   │   └── config.py              # Pydantic Settings (чтение .env)
-│   ├── rag/                       # Задел под RAG-пайплайн (этап 4)
-│   │   └── __init__.py
-│   ├── services/                  # Бизнес-сервисы
-│   │   └── __init__.py
-│   ├── schemas/                   # Pydantic-схемы данных
+│   │   └── config.py              # Pydantic Settings (чтение .env, параметры OpenAI, FAISS, SMTP)
+│   ├── rag/                       # Модуль векторного поиска RAG
 │   │   ├── __init__.py
-│   │   └── chat.py
+│   │   └── vector_store.py        # Реализация FAISSVectorStore (индексация, косинусный поиск)
+│   ├── services/                  # Бизнес-сервисы приложения
+│   │   ├── __init__.py
+│   │   ├── sales_agent.py         # AI Sales Agent, извлечение контактов, RAG-генерация ответов
+│   │   └── contact_service.py     # Обработка контактной формы, SQLite и отправка email по SMTP
+│   ├── schemas/                   # Pydantic-схемы валидации данных
+│   │   ├── __init__.py
+│   │   ├── chat.py                # Схемы сообщений чата и фиксации лидов
+│   │   └── contact.py             # Схемы формы обратной связи и reCAPTCHA
 │   ├── static/                    # Статические ресурсы
 │   │   ├── css/
 │   │   │   └── styles.css         # Основная дизайн-система и адаптивные стили
-│   │   └── js/
-│   │       └── chat.js            # Мобильное меню, скролл, чат
-│   └── templates/
-│       ├── base.html              # Базовый Jinja2-шаблон (шапка, подвал, мета-теги, скрипты)
-│       ├── index.html             # Главная Jinja2-страница (наследует base.html)
-│       ├── experience.html        # Страница опыта работы
-│       ├── skills.html            # Страница навыков и технологий
-│       ├── education.html         # Страница образования и обучения
-│       ├── portfolio.html         # Страница портфолио проектов
-│       └── ai_assistant.html      # Отдельная страница диалогового AI-ассистента
-├── knowledge_base/                # База знаний
-│   ├── raw/                       # Исходные материалы и документы
-│   └── processed/                 # Обработанные чанки
+│   │   ├── js/
+│   │   │   └── chat.js            # Мобильное меню, скролл, чат-виджет и страница ассистента
+│   │   └── images/                # Иконки и favicon (16x16, 32x32, apple-touch-icon, svg, ico)
+│   └── templates/                 # Jinja2-шаблоны страниц
+│       ├── base.html              # Базовый каркас (header, footer, meta, скрипты, плавающий виджет)
+│       ├── index.html             # Главная страница (Hero, Услуги, Обо мне, Ценности, стек)
+│       ├── experience.html        # Страница опыта работы и хронологии проектов
+│       ├── skills.html            # Страница навыков, технологий и стека
+│       ├── education.html         # Страница образования, дипломов и сертификаций
+│       ├── portfolio.html         # Страница портфолио и реализованных проектов
+│       ├── contact.html           # Страница контактов и формы обратной связи
+│       └── ai_assistant.html      # Полноэкранный интерфейс диалогового AI-ассистента
 ├── data/                          # Локальные данные (SQLite messages.db)
-├── rag/                           # Хранилище векторной базы данных FAISS
-├── scripts/                       # Вспомогательные скрипты индексации
-├── tests/                         # Автоматические тесты
+├── docs/                          # Техническая документация и мастер-промпты
+├── media/                         # Медиа-материалы и документы для скачивания
+│   └── docs/                      # Резюме в формате PDF (RU и EN версии)
+├── rag/                           # Хранилище векторной базы данных FAISS и базы знаний
+│   ├── knowledge_base/            # Исходная база знаний в формате Markdown (knowledge_base.md, git-exempt)
+│   ├── chunks.json                # Индексированные текстовые чанки
+│   └── index.faiss                # Бинарный векторный индекс FAISS
+├── scripts/                       # Вспомогательные скрипты автоматизации
+│   ├── build_rag_knowledge_base.py# Сборка Markdown базы знаний, эмбеддинги OpenAI и индекс FAISS
+│   ├── generate_favicons.py       # Генерация комплекта фавиконов из SVG
+│   └── generate_ru_cv.py          # Генерация русскоязычного PDF-резюме через ReportLab
+├── tests/                         # Автоматизированные тесты pytest
 │   ├── __init__.py
-│   ├── test_health.py             # Тестирование /health
-│   └── test_homepage.py           # Тестирование главной страницы и статики
-├── evaluation/                    # Метрики оценки качества ответов
-├── experiment_logs/               # Журналы экспериментов с параметрами RAG
-├── .env.example                   # Шаблон переменных окружения
+│   ├── test_health.py             # Тестирование эндпоинта /health
+│   ├── test_homepage.py           # Тестирование страниц, маршрутизации, статики и шаблонов
+│   ├── test_contact_form.py       # Тестирование формы контактов, валидации, SQLite и SMTP
+│   ├── test_faiss_rag.py          # Тестирование FAISS векторного хранилища и RAG базы знаний
+│   └── test_sales_agent.py        # Тестирование AI Sales Agent, извлечения лидов и диалогов
+├── .env.example                   # Шаблон конфигурации переменных окружения
 ├── .gitignore                     # Правила исключений Git
 ├── requirements.txt               # Зависимости проекта
 └── README.md                      # Документация проекта
@@ -196,7 +210,7 @@ python scripts/build_rag_knowledge_base.py
 ```
 
 Скрипт выполняет:
-1. Сборку подтверждённых документов из сайта, CV (PDF) и репозиториев GitHub (@ajandris);
+1. Загрузку подтверждённых документов из внешнего Markdown-файла базы знаний `rag/knowledge_base/knowledge_base.md`;
 2. Генерацию векторных представлений через модель OpenAI `text-embedding-3-small` (1536 измерений);
 3. Построение индекса `IndexFlatIP` (косинусное сходство) и сохранение в `./rag/index.faiss` и `./rag/chunks.json`;
 4. Контрольный тестовый поиск по ключевым запросам компетенций.

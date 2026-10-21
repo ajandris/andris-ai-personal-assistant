@@ -31,7 +31,7 @@ async def health_check(settings: Settings = Depends(get_settings)) -> dict:
 @router.post(
     "/api/chat",
     response_model=ChatResponse,
-    summary="Интерфейс обращения к AI Sales-ассистенту",
+    summary="Интерфейс обращения к AI-ассистенту",
 )
 async def chat_endpoint(
     request: ChatRequest,
@@ -47,10 +47,20 @@ async def chat_endpoint(
     summary="Отправка контактных данных посетителя из виджета чата",
 )
 async def chat_lead_endpoint(
+    request: Request,
     lead: LeadCaptureRequest,
     settings: Settings = Depends(get_settings),
 ) -> LeadCaptureResponse:
-    """Сохранение лида в базу данных и отправка уведомления на настроенный email."""
+    """Проверка reCAPTCHA, сохранение лида в базу данных и отправка уведомления на настроенный email."""
+    client_ip = request.client.host if request.client else None
+    is_recaptcha_valid = await verify_recaptcha(
+        lead.recaptcha_token, client_ip, settings
+    )
+    if not is_recaptcha_valid:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Проверка reCAPTCHA не пройдена. Пожалуйста, подтвердите, что вы не робот.",
+        )
     return await sales_agent_service.capture_direct_lead(lead, settings=settings)
 
 

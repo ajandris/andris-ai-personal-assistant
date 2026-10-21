@@ -268,7 +268,7 @@ function initAIAssistantChat() {
     const bubble = document.createElement("div");
     bubble.classList.add("message-bubble", "typing-bubble");
     bubble.innerHTML = `
-      <div class="typing-dots" aria-label="AI Sales Agent формирует ответ">
+      <div class="typing-dots" aria-label="AI Agent формирует ответ">
         <span></span><span></span><span></span>
       </div>
       <span class="typing-text">Поиск в RAG базе знаний и сопоставление навыков...</span>
@@ -449,25 +449,69 @@ function initAIAssistantChat() {
 }
 
 /**
- * 6. Direct Lead Form Submission
+ * 6. Direct Lead Form Submission with reCAPTCHA
  */
 function initDirectLeadForm() {
   const form = document.getElementById("direct-lead-form");
   if (!form) return;
 
+  const nameInput = document.getElementById("lead-name");
+  const emailInput = document.getElementById("lead-email");
+  const phoneInput = document.getElementById("lead-phone");
+  const demandsInput = document.getElementById("lead-demands");
+  const submitBtn = document.getElementById("lead-submit-btn");
+  const btnText = submitBtn ? submitBtn.querySelector(".btn-text") : null;
+  const btnSpinner = submitBtn ? submitBtn.querySelector(".btn-spinner") : null;
+  const btnArrow = submitBtn ? submitBtn.querySelector(".btn-arrow") : null;
+  const alertBox = document.getElementById("lead-card-alert");
+
+  function showLeadCardAlert(type, message) {
+    if (!alertBox) return;
+    alertBox.className = "contact-alert " + (type === "success" ? "contact-alert-success" : "contact-alert-error");
+    alertBox.textContent = message;
+    alertBox.style.display = "block";
+  }
+
+  function hideLeadCardAlert() {
+    if (!alertBox) return;
+    alertBox.style.display = "none";
+  }
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    hideLeadCardAlert();
 
-    const nameInput = document.getElementById("lead-name");
-    const emailInput = document.getElementById("lead-email");
-    const phoneInput = document.getElementById("lead-phone");
-    const demandsInput = document.getElementById("lead-demands");
-    const submitBtn = document.getElementById("lead-submit-btn");
+    const name = (nameInput?.value || "").trim();
+    const email = (emailInput?.value || "").trim();
+    const phone = (phoneInput?.value || "").trim();
+    const demands = (demandsInput?.value || "").trim();
 
-    if (!nameInput || !emailInput || !submitBtn) return;
+    if (!name || name.length < 2) {
+      showLeadCardAlert("error", "Пожалуйста, укажите ваше имя (не менее 2 символов).");
+      if (nameInput) nameInput.focus();
+      return;
+    }
 
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = "<span>Отправка...</span>";
+    if (!email || !email.includes("@")) {
+      showLeadCardAlert("error", "Пожалуйста, введите корректный адрес электронной почты.");
+      if (emailInput) emailInput.focus();
+      return;
+    }
+
+    // Google reCAPTCHA check
+    let recaptchaToken = null;
+    if (typeof grecaptcha !== "undefined" && typeof grecaptcha.getResponse === "function") {
+      recaptchaToken = grecaptcha.getResponse();
+      if (!recaptchaToken) {
+        showLeadCardAlert("error", "Пожалуйста, подтвердите reCAPTCHA («Я не робот»).");
+        return;
+      }
+    }
+
+    if (submitBtn) submitBtn.disabled = true;
+    if (btnText) btnText.textContent = "Отправка...";
+    if (btnArrow) btnArrow.style.display = "none";
+    if (btnSpinner) btnSpinner.style.display = "inline";
 
     try {
       const response = await fetch("/api/chat/lead", {
@@ -477,15 +521,18 @@ function initDirectLeadForm() {
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          name: nameInput.value.trim(),
-          email: emailInput.value.trim(),
-          phone: phoneInput ? phoneInput.value.trim() : "",
-          demands: demandsInput ? demandsInput.value.trim() : "",
+          name: name,
+          email: email,
+          phone: phone || null,
+          demands: demands || null,
+          recaptcha_token: recaptchaToken,
         }),
       });
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
+
       if (response.ok && data.success) {
+        showLeadCardAlert("success", data.message || "Контакты успешно отправлены Андрису!");
         const banner = document.getElementById("lead-notification-banner");
         const bannerText = document.getElementById("lead-banner-text");
         if (banner) {
@@ -494,17 +541,25 @@ function initDirectLeadForm() {
           banner.scrollIntoView({ behavior: "smooth" });
         }
         form.reset();
-        submitBtn.innerHTML = "<span>✓ Заявка отправлена</span>";
+        if (typeof grecaptcha !== "undefined" && typeof grecaptcha.reset === "function") {
+          try { grecaptcha.reset(); } catch (err) {}
+        }
+        if (btnText) btnText.textContent = "✓ Заявка отправлена";
       } else {
-        alert(data.message || "Ошибка отправки заявки.");
-        submitBtn.innerHTML = "<span>Отправить контакты Андрису →</span>";
-        submitBtn.disabled = false;
+        const detail = data.detail || data.message || "Не удалось отправить заявку. Попробуйте снова.";
+        showLeadCardAlert("error", detail);
+        if (btnText) btnText.textContent = "Отправить контакты Андрису";
+        if (btnArrow) btnArrow.style.display = "inline";
+        if (submitBtn) submitBtn.disabled = false;
       }
     } catch (err) {
       console.error("Lead submission error:", err);
-      alert("Не удалось отправить сообщение. Пожалуйста, повторите попытку.");
-      submitBtn.innerHTML = "<span>Отправить контакты Андрису →</span>";
-      submitBtn.disabled = false;
+      showLeadCardAlert("error", "Сетевая ошибка при отправке. Проверьте соединение и попробуйте снова.");
+      if (btnText) btnText.textContent = "Отправить контакты Андрису";
+      if (btnArrow) btnArrow.style.display = "inline";
+      if (submitBtn) submitBtn.disabled = false;
+    } finally {
+      if (btnSpinner) btnSpinner.style.display = "none";
     }
   });
 }

@@ -63,7 +63,7 @@ def test_static_js_accessible():
 
 
 def test_api_chat_sales_agent():
-    """POST /api/chat возвращает ответ Sales AI-ассистента и подтверждённые RAG-источники."""
+    """POST /api/chat возвращает ответ AI-ассистента и подтверждённые RAG-источники."""
     client = TestClient(app)
     response = client.post(
         "/api/chat",
@@ -321,6 +321,33 @@ def test_active_menu_item_on_contact_page():
     response = client.get("/contact")
     assert response.status_code == 200
     assert 'href="/contact" class="nav-link active is-active" aria-current="page"' in response.text
+
+
+def test_all_pages_have_same_home_page_title():
+    """Все страницы сайта имеют точно такой же тег <title>, как и главная страница."""
+    client = TestClient(app)
+    home_response = client.get("/")
+    assert home_response.status_code == 200
+    assert "<title>" in home_response.text
+
+    # Извлекаем title главной страницы
+    home_title = home_response.text.split("<title>")[1].split("</title>")[0].strip()
+    assert len(home_title) > 0
+
+    routes = [
+        "/experience",
+        "/skills",
+        "/education",
+        "/portfolio",
+        "/contact",
+        "/contacts",
+        "/ai-assistant",
+    ]
+    for route in routes:
+        resp = client.get(route)
+        assert resp.status_code == 200
+        page_title = resp.text.split("<title>")[1].split("</title>")[0].strip()
+        assert page_title == home_title, f"Route {route} title '{page_title}' does not match home title '{home_title}'"
 
 
 
