@@ -51,6 +51,7 @@ andris-ai-personal-assistant/
 │   ├── rag/                       # RAG: векторный поиск и ядро ассистента
 │   │   ├── __init__.py
 │   │   ├── assistant_core.py      # Ядро ассистента: база → чанки → эмбеддинги → FAISS → 2 вызова LLM
+│   │   ├── site_parser.py         # Парсер страниц сайта для корпуса RAG B
 │   │   └── vector_store.py        # Реализация FAISSVectorStore (используется текущим Sales Agent)
 │   ├── services/                  # Бизнес-сервисы приложения
 │   │   ├── __init__.py
@@ -78,10 +79,16 @@ andris-ai-personal-assistant/
 ├── data/                          # Локальные данные (SQLite messages.db, в Git не коммитится)
 ├── knowledge_base/                # Редактируемая база знаний (Master Knowledge Base)
 │   ├── README.md                  # Схема записи, правила редактирования и проверки
-│   └── rag_a/
-│       └── records.jsonl          # Корпус RAG A: один проверенный факт на запись, с источником
+│   ├── rag_a/
+│   │   └── records.jsonl          # Корпус RAG A: один проверенный факт на запись, с источником
+│   ├── rag_b/
+│   │   └── records.jsonl          # Корпус RAG B1: секции страниц сайта (scripts/build_rag_b.py)
+│   └── rag_b2/
+│       └── records.jsonl          # Корпус RAG B2: страницы + PDF сайта (build_rag_b.py --include-pdfs)
 ├── media/                         # Медиа-материалы и документы для скачивания
 │   └── docs/                      # Резюме (PDF, RU и EN) и благодарственное письмо «Петробалт»
+├── notebooks/
+│   └── stage3_prototype/          # Ноутбук этапа 3 + базы A/B1/B2 + промпты (scripts/build_notebook.py)
 ├── prompts/                       # Промпты ассистента, отдельно от кода, с версиями
 │   └── ru/
 │       ├── intent_v1.txt          # Промпт LLM-вызова 1: намерение и поисковый запрос
@@ -93,12 +100,16 @@ andris-ai-personal-assistant/
 │   └── index.faiss                # Бинарный векторный индекс FAISS
 ├── scripts/                       # Вспомогательные скрипты автоматизации
 │   ├── build_rag_knowledge_base.py# Сборка индекса FAISS из прежней базы knowledge_base.md
+│   ├── build_rag_b.py             # Формирование корпуса RAG B парсингом запущенного сайта
+│   ├── build_notebook.py          # Сборка ноутбука этапа 3 из assistant_core.py
 │   ├── validate_knowledge_base.py # Проверка records.jsonl: схема, дубликаты, персональные данные
 │   ├── generate_favicons.py       # Генерация комплекта фавиконов из SVG
 │   └── generate_ru_cv.py          # Генерация русскоязычного PDF-резюме через ReportLab
 ├── tests/                         # Автоматизированные тесты pytest
 │   ├── __init__.py
 │   ├── test_assistant_core.py     # Тесты ядра ассистента с подставным клиентом (без API-ключа)
+│   ├── test_site_parser.py        # Тесты парсера сайта для RAG B
+│   ├── test_build_notebook.py     # Проверка, что ноутбук совпадает с assistant_core.py
 │   ├── test_health.py             # Тестирование эндпоинта /health
 │   ├── test_homepage.py           # Тестирование страниц, маршрутизации, статики и шаблонов
 │   ├── test_contact_form.py       # Тестирование формы контактов, валидации, SQLite и SMTP

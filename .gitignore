@@ -236,3 +236,7 @@ rag/*
 *.index
 *.db
 *.sqlite3
+
+# Индексы FAISS, которые ноутбук строит при запуске
+notebooks/*/index/
+notebooks/stage3_prototype_data.zip

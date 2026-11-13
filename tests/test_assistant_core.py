@@ -182,6 +182,17 @@ def test_detect_intent_rejects_unknown_intent():
         detect_intent("Вопрос", client, "model", "prompt")
 
 
+def test_run_assistant_source_number_matches_citation_in_answer(knowledge):
+    index, chunks = knowledge
+    client = FakeClient([
+        '{"intent": "fact", "search_query": "Oracle TietoEnator", "language": "ru"}',
+        '{"answer": "Ответ по второму фрагменту [2].", "sufficient_context": true, "used_sources": [2]}',
+    ])
+    config = AssistantConfig(min_score=0.0)
+    response = run_assistant("Вопрос", client, index, chunks, config, load_prompts(config))
+    assert [s["number"] for s in response.sources] == [2]
+
+
 def test_generate_answer_drops_source_numbers_outside_context():
     hits = [{"text": "Факт 1"}, {"text": "Факт 2"}]
     client = FakeClient(['{"answer": "Ответ [1]", "sufficient_context": true, "used_sources": [1, 5, 1]}'])
@@ -205,6 +216,7 @@ def test_run_assistant_makes_two_llm_calls_and_returns_sources(knowledge):
     second_call_user_message = client.chat_calls[1][1]["content"]
     assert "Контекст:" in second_call_user_message and "[1]" in second_call_user_message
     assert response.sources and response.sources[0]["record_id"].startswith("experience_latvia_tietoenator")
+    assert response.sources[0]["number"] == 1
     assert response.log["intent"]["search_query"] == "Oracle TietoEnator"
     assert "duration_sec" in response.log
 

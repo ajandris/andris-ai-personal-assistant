@@ -100,11 +100,14 @@ class AssistantError(Exception):
 # 1. База знаний
 # ---------------------------------------------------------------------------
 
-def load_records(path: str | Path = DEFAULT_RECORDS_PATH, site: str = "ru") -> list[dict[str, Any]]:
+def load_records(path: str | Path = DEFAULT_RECORDS_PATH, site: str = "ru",
+                 require_verified: bool = True) -> list[dict[str, Any]]:
     """Читает records.jsonl и оставляет записи, допущенные к индексации.
 
-    Допускаются записи с verified=true и public=true, у которых поле site равно
-    "all" или коду нужной версии сайта.
+    Допускаются записи с public=true, у которых поле site равно "all" или коду
+    нужной версии сайта. При require_verified=True (база RAG A) дополнительно
+    требуется verified=true. Корпус RAG B, полученный парсингом сайта, вручную
+    не проверялся, поэтому загружается с require_verified=False.
     """
     records = []
     with open(path, encoding="utf-8") as file:
@@ -112,7 +115,9 @@ def load_records(path: str | Path = DEFAULT_RECORDS_PATH, site: str = "ru") -> l
             if not line.strip():
                 continue
             record = json.loads(line)
-            if not (record.get("verified") and record.get("public")):
+            if not record.get("public"):
+                continue
+            if require_verified and not record.get("verified"):
                 continue
             if record.get("site", "all") not in ("all", site):
                 continue
@@ -240,9 +245,10 @@ def load_index(directory: str | Path = DEFAULT_INDEX_DIR) -> tuple[faiss.Index, 
 
 
 def build_knowledge_index(client: Any, config: AssistantConfig,
-                          records_path: str | Path = DEFAULT_RECORDS_PATH) -> tuple[faiss.Index, list[dict[str, Any]]]:
+                          records_path: str | Path = DEFAULT_RECORDS_PATH,
+                          require_verified: bool = True) -> tuple[faiss.Index, list[dict[str, Any]]]:
     """Полный цикл индексации: загрузка записей → фрагменты → эмбеддинги → индекс."""
-    records = load_records(records_path, site=config.site)
+    records = load_records(records_path, site=config.site, require_verified=require_verified)
     chunks = chunk_records(records, config.chunk_size, config.chunk_overlap)
     vectors = embed_texts([chunk["text"] for chunk in chunks], client, config.embedding_model)
     return build_index(vectors), chunks
@@ -345,7 +351,8 @@ def run_assistant(question: str, client: Any, index: faiss.Index, chunks: list[d
     log["answer"] = result.model_dump()
 
     sources = [
-        {"title": hits[n - 1]["title"], "source_url": hits[n - 1]["source_url"], "record_id": hits[n - 1]["record_id"]}
+        {"number": n, "title": hits[n - 1]["title"], "source_url": hits[n - 1]["source_url"],
+         "record_id": hits[n - 1]["record_id"]}
         for n in result.used_sources
     ]
     status = "answered" if result.sufficient_context else "insufficient_context"
