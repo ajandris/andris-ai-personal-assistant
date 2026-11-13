@@ -92,7 +92,14 @@ def test_experience_page_route():
     assert response.status_code == 200
     assert "Опыт работы" in response.text
     assert 'id="experience"' in response.text
-    assert '<p class="timeline-role">Операционная работа</p>' in response.text
+    assert '<p class="timeline-role">Warehouse operative (складской работник)</p>' in response.text
+    assert "Руководитель команды из 10 специалистов" in response.text
+    assert "организации цепочек поставок" not in response.text
+    assert "Проектно-конструкторское бюро «Петробалт»" in response.text
+    assert "Апрель 2026 — июнь 2026 · стажировка" in response.text
+    assert "Внедрено в продукцию после стажировки" in response.text
+    assert "Интеллектуальная обработка нормативно-справочной документации в судостроении" in response.text
+    assert 'href="/media/docs/Andris%20Jancevskis%20Petrobalt%20thank-you%20letter.pdf"' in response.text
     assert "и координация процессов" not in response.text
     assert "Архивные материалы и детальная хронология проектов подготавливаются к публикации" not in response.text
     assert 'href="/media/docs/Andris%20Jancevskis%20CV%20October%202026%20web%20RU.pdf"' in response.text
@@ -139,7 +146,7 @@ def test_skills_page_route():
 
 
 def test_education_page_route():
-    """GET /education возвращает страницу образования и обучения с карточкой Vibe Coder на 3-м месте."""
+    """GET /education возвращает страницу образования и обучения с карточкой Vibe Coding на 3-м месте."""
     client = TestClient(app)
     response = client.get("/education")
     assert response.status_code == 200
@@ -147,7 +154,7 @@ def test_education_page_route():
     assert 'id="education"' in response.text
     idx_aiml = response.text.index("AI/ML Developer")
     idx_agents = response.text.index("AI Agents Developer")
-    idx_vibe = response.text.index("Vibe Coder")
+    idx_vibe = response.text.index("Vibe Coding")
     assert idx_aiml < idx_agents < idx_vibe
 
 
@@ -355,3 +362,11 @@ def test_all_pages_have_same_home_page_title():
 
 
 
+
+
+def test_homepage_no_project_management_domain():
+    """Управление проектами не входит в ключевые сферы компетенций на главной странице."""
+    client = TestClient(app)
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "<span>Управление проектами</span>" not in response.text
