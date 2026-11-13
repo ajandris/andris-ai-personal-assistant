@@ -48,9 +48,10 @@ andris-ai-personal-assistant/
 │   ├── core/
 │   │   ├── __init__.py
 │   │   └── config.py              # Pydantic Settings (чтение .env, параметры OpenAI, FAISS, SMTP)
-│   ├── rag/                       # Модуль векторного поиска RAG
+│   ├── rag/                       # RAG: векторный поиск и ядро ассистента
 │   │   ├── __init__.py
-│   │   └── vector_store.py        # Реализация FAISSVectorStore (индексация, косинусный поиск)
+│   │   ├── assistant_core.py      # Ядро ассистента: база → чанки → эмбеддинги → FAISS → 2 вызова LLM
+│   │   └── vector_store.py        # Реализация FAISSVectorStore (используется текущим Sales Agent)
 │   ├── services/                  # Бизнес-сервисы приложения
 │   │   ├── __init__.py
 │   │   ├── sales_agent.py         # AI Sales Agent, извлечение контактов, RAG-генерация ответов
@@ -68,25 +69,36 @@ andris-ai-personal-assistant/
 │   └── templates/                 # Jinja2-шаблоны страниц
 │       ├── base.html              # Базовый каркас (header, footer, meta, скрипты, плавающий виджет)
 │       ├── index.html             # Главная страница (Hero, Услуги, Обо мне, Ценности, стек)
-│       ├── experience.html        # Страница опыта работы и хронологии проектов
+│       ├── experience.html        # Страница опыта работы, включая стажировку «Петробалт»
 │       ├── skills.html            # Страница навыков, технологий и стека
 │       ├── education.html         # Страница образования, дипломов и сертификаций
 │       ├── portfolio.html         # Страница портфолио и реализованных проектов
 │       ├── contact.html           # Страница контактов и формы обратной связи
 │       └── ai_assistant.html      # Полноэкранный интерфейс диалогового AI-ассистента
-├── data/                          # Локальные данные (SQLite messages.db)
+├── data/                          # Локальные данные (SQLite messages.db, в Git не коммитится)
+├── knowledge_base/                # Редактируемая база знаний (Master Knowledge Base)
+│   ├── README.md                  # Схема записи, правила редактирования и проверки
+│   └── rag_a/
+│       └── records.jsonl          # Корпус RAG A: один проверенный факт на запись, с источником
 ├── media/                         # Медиа-материалы и документы для скачивания
-│   └── docs/                      # Резюме в формате PDF (RU и EN версии)
-├── rag/                           # Хранилище векторной базы данных FAISS и базы знаний
-│   ├── knowledge_base/            # Исходная база знаний в формате Markdown (knowledge_base.md, git-exempt)
+│   └── docs/                      # Резюме (PDF, RU и EN) и благодарственное письмо «Петробалт»
+├── prompts/                       # Промпты ассистента, отдельно от кода, с версиями
+│   └── ru/
+│       ├── intent_v1.txt          # Промпт LLM-вызова 1: намерение и поисковый запрос
+│       ├── answer_v1.txt          # Промпт LLM-вызова 2: ответ только по найденному контексту
+│       └── messages.json          # Служебные сообщения: вне темы, нет данных, контакт
+├── rag/                           # Индекс FAISS текущего Sales Agent (в Git не коммитится)
+│   ├── knowledge_base/            # Прежняя база знаний (knowledge_base.md), заменяется на records.jsonl
 │   ├── chunks.json                # Индексированные текстовые чанки
 │   └── index.faiss                # Бинарный векторный индекс FAISS
 ├── scripts/                       # Вспомогательные скрипты автоматизации
-│   ├── build_rag_knowledge_base.py# Сборка Markdown базы знаний, эмбеддинги OpenAI и индекс FAISS
+│   ├── build_rag_knowledge_base.py# Сборка индекса FAISS из прежней базы knowledge_base.md
+│   ├── validate_knowledge_base.py # Проверка records.jsonl: схема, дубликаты, персональные данные
 │   ├── generate_favicons.py       # Генерация комплекта фавиконов из SVG
 │   └── generate_ru_cv.py          # Генерация русскоязычного PDF-резюме через ReportLab
 ├── tests/                         # Автоматизированные тесты pytest
 │   ├── __init__.py
+│   ├── test_assistant_core.py     # Тесты ядра ассистента с подставным клиентом (без API-ключа)
 │   ├── test_health.py             # Тестирование эндпоинта /health
 │   ├── test_homepage.py           # Тестирование страниц, маршрутизации, статики и шаблонов
 │   ├── test_contact_form.py       # Тестирование формы контактов, валидации, SQLite и SMTP
