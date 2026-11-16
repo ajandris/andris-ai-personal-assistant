@@ -29,6 +29,7 @@ AssistantError, и интерфейс должен честно сообщить
 from __future__ import annotations
 
 import json
+import re
 import time
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
@@ -39,9 +40,10 @@ import numpy as np
 from pydantic import BaseModel, Field, ValidationError
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_RECORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a" / "records.jsonl"
+DEFAULT_RECORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a_v3" / "records.jsonl"
+DEFAULT_KEYWORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a_v3" / "keywords.csv"
 DEFAULT_PROMPTS_DIR = PROJECT_ROOT / "prompts"
-DEFAULT_INDEX_DIR = PROJECT_ROOT / "rag" / "index_rag_a"
+DEFAULT_INDEX_DIR = PROJECT_ROOT / "rag" / "index_rag_a_v3"
 
 
 # ---------------------------------------------------------------------------
@@ -50,20 +52,41 @@ DEFAULT_INDEX_DIR = PROJECT_ROOT / "rag" / "index_rag_a"
 
 @dataclass(frozen=True)
 class AssistantConfig:
-    """Все параметры, которые меняются в экспериментах, собраны в одном месте."""
+    """Все параметры, которые меняются в экспериментах, собраны в одном месте.
+
+    Значения по умолчанию — лучший вариант по итогам экспериментов этапа 4
+    (A3_a4_noname_kw): промпты intent_v2 и answer_v4, имя владельца убрано из
+    текста для эмбеддингов, таблица ключевых слов, перекрытие фрагментов 0,
+    температура обоих вызовов LLM 0. Настройки этапа 3 — STAGE3_CONFIG.
+    """
 
     language: str = "ru"                  # язык промптов и служебных сообщений
     site: str = "ru"                      # версия сайта: фильтр поля site у записей
     chunk_size: int = 800                 # максимальная длина фрагмента, символов
-    chunk_overlap: int = 100              # перекрытие соседних фрагментов, символов
+    chunk_overlap: int = 0                # перекрытие соседних фрагментов, символов
     top_k: int = 5                        # сколько фрагментов передавать во второй вызов
     min_score: float = 0.25               # порог косинусного сходства для фрагмента
     embedding_model: str = "text-embedding-3-small"
     llm_model: str = "gpt-4o-mini"
     intent_temperature: float = 0.0
-    answer_temperature: float = 0.2
-    intent_prompt_version: str = "v1"
-    answer_prompt_version: str = "v1"
+    answer_temperature: float = 0.0
+    intent_prompt_version: str = "v2"
+    answer_prompt_version: str = "v4"
+    # Имя владельца сайта есть почти в каждой записи базы A. Одинаковое начало
+    # сближает эмбеддинги всех записей, поэтому в версии v2 имя убирается из
+    # текста, по которому строятся эмбеддинги фрагментов и запроса. Текст,
+    # который получает LLM, не меняется.
+    strip_owner_name: bool = True
+    # Если шаг 1 пометил вопрос как off_topic, но в вопросе есть ключевое слово
+    # из таблицы ключевых слов базы знаний (keywords.csv), вопрос всё равно
+    # обрабатывается по базе.
+    kb_term_override: bool = True
+    owner_name_pattern: str = r"\b(?:Андрис[а-яё]*(?:\s+Янчевскис[а-яё]*)?|Янчевскис[а-яё]*|Andris(?:\s+Jancevskis)?|Jancevskis)\b"
+
+
+# Настройки прототипа этапа 3 (для воспроизведения первых результатов).
+STAGE3_CONFIG = AssistantConfig(chunk_overlap=100, answer_temperature=0.2, intent_prompt_version="v1",
+                                answer_prompt_version="v1", strip_owner_name=False, kb_term_override=False)
 
 
 class IntentResult(BaseModel):
@@ -200,6 +223,21 @@ def normalize(vectors: np.ndarray) -> np.ndarray:
     return vectors / norms
 
 
+def embedding_text(text: str, config: AssistantConfig) -> str:
+    """Текст, по которому строится эмбеддинг фрагмента или поискового запроса.
+
+    При config.strip_owner_name=True из текста удаляются формы имени владельца
+    сайта (owner_name_pattern). Если после удаления текст пуст, возвращается
+    исходный текст.
+    """
+    if not config.strip_owner_name:
+        return text
+    cleaned = re.sub(config.owner_name_pattern, " ", text, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s+([.,;:!?])", r"\1", cleaned)
+    cleaned = " ".join(cleaned.split())
+    return cleaned or text
+
+
 def build_index(vectors: np.ndarray) -> faiss.Index:
     """Создаёт индекс FAISS IndexFlatIP (точный поиск по косинусному сходству)."""
     vectors = normalize(vectors)
@@ -250,8 +288,37 @@ def build_knowledge_index(client: Any, config: AssistantConfig,
     """Полный цикл индексации: загрузка записей → фрагменты → эмбеддинги → индекс."""
     records = load_records(records_path, site=config.site, require_verified=require_verified)
     chunks = chunk_records(records, config.chunk_size, config.chunk_overlap)
-    vectors = embed_texts([chunk["text"] for chunk in chunks], client, config.embedding_model)
+    vectors = embed_texts([embedding_text(chunk["text"], config) for chunk in chunks], client, config.embedding_model)
     return build_index(vectors), chunks
+
+
+def load_or_build_index(client: Any, config: AssistantConfig,
+                        records_path: str | Path = DEFAULT_RECORDS_PATH,
+                        index_dir: str | Path = DEFAULT_INDEX_DIR,
+                        require_verified: bool = True) -> tuple[faiss.Index, list[dict[str, Any]]]:
+    """Загружает сохранённый индекс или строит новый, если база или настройки изменились.
+
+    Индекс считается актуальным, если в index_dir сохранены тот же хэш файла базы
+    и те же параметры, от которых зависят фрагменты и эмбеддинги.
+    """
+    import hashlib
+
+    fingerprint = {
+        "records_sha256": hashlib.sha256(Path(records_path).read_bytes()).hexdigest(),
+        "require_verified": require_verified,
+        **{key: getattr(config, key) for key in ("site", "chunk_size", "chunk_overlap", "embedding_model",
+                                                 "strip_owner_name", "owner_name_pattern")},
+    }
+    index_dir = Path(index_dir)
+    meta_path = index_dir / "fingerprint.json"
+    if (index_dir / "index.faiss").exists() and meta_path.exists():
+        if json.loads(meta_path.read_text(encoding="utf-8")) == fingerprint:
+            index, chunks, _ = load_index(index_dir)
+            return index, chunks
+    index, chunks = build_knowledge_index(client, config, records_path, require_verified)
+    save_index(index, chunks, config, index_dir)
+    meta_path.write_text(json.dumps(fingerprint, ensure_ascii=False, indent=2), encoding="utf-8")
+    return index, chunks
 
 
 # ---------------------------------------------------------------------------
@@ -300,6 +367,50 @@ def detect_intent(question: str, client: Any, model: str, prompt: str, temperatu
         raise AssistantError(f"Ответ первого шага не соответствует схеме: {data}") from exc
 
 
+KEYWORD_CATEGORIES = ("fact", "project", "job_match", "work_terms", "contact")
+
+
+def load_keywords(path: str | Path) -> dict[str, str]:
+    """Читает таблицу ключевых слов базы знаний (CSV: keyword, category, comment).
+
+    Таблицу ведёт автор базы: в неё вносятся названия проектов, организаций,
+    технологий и другие слова, вопросы с которыми всегда относятся к базе.
+    category — намерение, с которым обрабатывается такой вопрос; одно из
+    значений IntentResult, кроме off_topic. Возвращает {keyword: category}.
+    Пустые строки и строки, начинающиеся с «#», пропускаются; неизвестная
+    категория — ошибка с номером строки.
+    """
+    import csv
+
+    keywords: dict[str, str] = {}
+    with open(path, encoding="utf-8-sig", newline="") as file:
+        for line, row in enumerate(csv.DictReader(file), start=2):
+            keyword = (row.get("keyword") or "").strip()
+            if not keyword or keyword.startswith("#"):
+                continue
+            category = (row.get("category") or "").strip()
+            if category not in KEYWORD_CATEGORIES:
+                raise ValueError(f"{path}, строка {line}: категория «{category}» для «{keyword}» — "
+                                 f"допустимы {', '.join(KEYWORD_CATEGORIES)}")
+            keywords[keyword] = category
+    return keywords
+
+
+def find_kb_term(question: str, keywords: dict[str, str] | list[str]) -> str:
+    """Ключевое слово из таблицы, упомянутое в вопросе ("" — нет).
+
+    Сравнение без учёта регистра; слово должно начинаться с начала слова в
+    вопросе, окончание может быть любым («Петробалт» находится и в «Петробалте»).
+    При нескольких совпадениях возвращается самое длинное ключевое слово
+    (в том написании, в каком оно стоит в таблице).
+    """
+    text = question.lower()
+    for keyword in sorted(keywords, key=len, reverse=True):
+        if re.search(rf"(?<![\w-]){re.escape(keyword.lower())}", text):
+            return keyword
+    return ""
+
+
 def format_context(hits: list[dict[str, Any]]) -> str:
     """Нумерует найденные фрагменты для второго промпта: [1] ..., [2] ..."""
     return "\n\n".join(f"[{number}] {hit['text']}" for number, hit in enumerate(hits, start=1))
@@ -324,8 +435,15 @@ def generate_answer(question: str, hits: list[dict[str, Any]], client: Any, mode
 # ---------------------------------------------------------------------------
 
 def run_assistant(question: str, client: Any, index: faiss.Index, chunks: list[dict[str, Any]],
-                  config: AssistantConfig, prompts: dict[str, Any]) -> AssistantResponse:
-    """Обрабатывает один вопрос: намерение → поиск → ответ. Возвращает ответ и журнал шагов."""
+                  config: AssistantConfig, prompts: dict[str, Any],
+                  keywords: dict[str, str] | None = None) -> AssistantResponse:
+    """Обрабатывает один вопрос: намерение → поиск → ответ. Возвращает ответ и журнал шагов.
+
+    keywords — таблица ключевых слов базы {слово: категория} (load_keywords);
+    используется только при config.kb_term_override=True. Если вопрос помечен
+    off_topic, но содержит слово из таблицы, намерение заменяется категорией
+    этого слова, а поиск идёт по тексту вопроса.
+    """
     started = time.perf_counter()
     question = question.strip()
     log: dict[str, Any] = {"question": question, "config": asdict(config)}
@@ -335,12 +453,17 @@ def run_assistant(question: str, client: Any, index: faiss.Index, chunks: list[d
     log["intent"] = intent.model_dump()
 
     if intent.intent == "off_topic":
-        return AssistantResponse(messages["off_topic"], "off_topic", log=_finish(log, started))
+        term = find_kb_term(question, keywords or {}) if config.kb_term_override else ""
+        if not term:
+            return AssistantResponse(messages["off_topic"], "off_topic", log=_finish(log, started))
+        intent = IntentResult(intent=keywords[term], search_query="", language=intent.language)
+        log["kb_term_override"] = {"keyword": term, "category": keywords[term]}
     if intent.intent == "contact" and not intent.search_query.strip():
         return AssistantResponse(messages["contact"], "contact", log=_finish(log, started))
 
     query = intent.search_query.strip() or question
-    query_vector = embed_texts([query], client, config.embedding_model)
+    log["embedded_query"] = embedding_text(query, config)
+    query_vector = embed_texts([log["embedded_query"]], client, config.embedding_model)
     hits = search(query_vector, index, chunks, config.top_k, config.min_score)
     log["hits"] = [{"chunk_id": h["chunk_id"], "score": h["score"]} for h in hits]
 

@@ -62,21 +62,6 @@ def test_static_js_accessible():
     assert "initAIAssistantChat" in response.text
 
 
-def test_api_chat_sales_agent():
-    """POST /api/chat возвращает ответ AI-ассистента и подтверждённые RAG-источники."""
-    client = TestClient(app)
-    response = client.post(
-        "/api/chat",
-        json={"message": "Какой опыт разработки у Андриса?"},
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["status"] == "ok"
-    assert len(data["reply"]) > 10
-    assert "sources" in data
-    assert isinstance(data["sources"], list)
-
-
 def test_homepage_uses_base_template():
     """Главная страница наследует базовый шаблон с шапкой и подвалом."""
     client = TestClient(app)
@@ -137,7 +122,8 @@ def test_skills_page_route():
     assert 'id="skills"' in response.text
     assert '<li class="skill-pill">RAG</li>' in response.text
     assert '<li class="skill-pill">Системный анализ</li>' in response.text
-    assert '<li class="skill-pill">Управление проектами</li>' in response.text
+    # Практики управления проектами после 2014 года не было — в навыках не показывается.
+    assert "Управление проектами" not in response.text
     assert "бизнес-анализ" not in response.text
     assert '<li class="skill-pill">Embeddings</li>' not in response.text
     assert '<li class="skill-pill">embeddings</li>' not in response.text

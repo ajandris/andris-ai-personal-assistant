@@ -26,7 +26,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, ValidationError, field_validator, model_validator
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
-DEFAULT_PATH = ROOT_DIR / "knowledge_base" / "rag_a" / "records.jsonl"
+DEFAULT_PATH = ROOT_DIR / "knowledge_base" / "rag_a_v3" / "records.jsonl"
 
 EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+")
 PHONE_RE = re.compile(r"\+?\d[\d\s()-]{8,}\d")

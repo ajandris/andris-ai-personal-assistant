@@ -27,7 +27,6 @@ class Settings(BaseSettings):
     openai_api_key: Optional[str] = None
     llm_model: str = ""
     embedding_model: str = ""
-    vector_db_path: str = "./rag"
 
     # SQLite Messages Database
     sqlite_db_path: str = "./data/messages.db"

@@ -171,6 +171,8 @@ function formatMarkdown(text) {
 
   // Convert markdown links [title](url)
   clean = clean.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="chat-inline-link">$1 ↗</a>');
+  // Ссылки на страницы этого сайта: [«Контакты»](/contact)
+  clean = clean.replace(/\[([^\]]+)\]\((\/[^\s)]*)\)/g, '<a href="$2" class="chat-inline-link">$1</a>');
 
   // Convert line breaks and bullet lists
   const lines = clean.split("\n");
@@ -397,7 +399,7 @@ function initAIAssistantChat() {
       console.error("Chat API error:", error);
       removeTypingIndicator();
       appendAssistantMessage(
-        "Произошла ошибка связи с сервером. Пожалуйста, повторите запрос или напишите Андрису напрямую на **andris.jancevskis@gmail.com**."
+        "Произошла ошибка связи с сервером. Пожалуйста, повторите запрос или напишите Андрису через форму на странице [«Контакты»](/contact)."
       );
       if (chatFeedback) {
         chatFeedback.textContent = "Ошибка при обращении к AI-ассистенту.";

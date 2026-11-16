@@ -1,5 +1,1 @@
-"""RAG module for embedding storage, vector search, and retrieval."""
-
-from app.rag.vector_store import FAISSVectorStore
-
-__all__ = ["FAISSVectorStore"]
+"""RAG: ядро AI-ассистента (assistant_core), парсер сайта и пакетный прогон вопросов."""

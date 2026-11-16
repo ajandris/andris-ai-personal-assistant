@@ -1,4 +1,4 @@
-"""Собирает ноутбук-прототип этапа 3 из модуля app/rag/assistant_core.py.
+"""Собирает финальный ноутбук этапа 4 из модуля app/rag/assistant_core.py.
 
 Код функций переносится в ячейки ноутбука без изменений, поэтому ноутбук и сайт
 всегда используют одну и ту же реализацию. Меняются только пути по умолчанию:
@@ -8,15 +8,17 @@
     python scripts/build_notebook.py
     python scripts/build_notebook.py --zip-url "https://drive.google.com/file/d/.../view?usp=sharing"
 
-Результат — папка notebooks/stage3_prototype/:
-    assistant_stage3.ipynb   ноутбук
-    records_rag_a.jsonl      база RAG A
+Результат — папка notebooks/stage4_final/:
+    assistant_stage4.ipynb   ноутбук
+    records_rag_a.jsonl      редактируемая база знаний RAG A (версия v3)
+    keywords_rag_a.csv       таблица ключевых слов базы A
     records_rag_b1.jsonl     база RAG B1 (страницы сайта)
     records_rag_b2.jsonl     база RAG B2 (страницы и PDF сайта)
-    prompts/ru/...           промпты
+    prompts/ru/...           промпты всех версий
     README.md                как запустить
-и архив notebooks/stage3_prototype_data.zip (базы знаний и промпты) для загрузки на Google Drive.
+и архив notebooks/stage4_final_data.zip (базы знаний, таблица ключевых слов и промпты) для Google Drive.
 В Colab ноутбук скачивает этот архив по общедоступной ссылке и распаковывает в /content.
+Ноутбук этапа 3 (notebooks/stage3_prototype) сохранён в том виде, в котором он был сдан.
 """
 
 from __future__ import annotations
@@ -31,24 +33,26 @@ from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 CORE_PATH = ROOT_DIR / "app" / "rag" / "assistant_core.py"
-OUTPUT_DIR = ROOT_DIR / "notebooks" / "stage3_prototype"
-NOTEBOOK_NAME = "assistant_stage3.ipynb"
-ZIP_PATH = ROOT_DIR / "notebooks" / "stage3_prototype_data.zip"
-DEFAULT_ZIP_URL = "https://drive.google.com/file/d/1WyBsx_Xeo_NqXfM5TJHUfAQxdYYpdHhV/view?usp=sharing"  # архив на Google Drive (доступ по ссылке)
+OUTPUT_DIR = ROOT_DIR / "notebooks" / "stage4_final"
+NOTEBOOK_NAME = "assistant_stage4.ipynb"
+ZIP_PATH = ROOT_DIR / "notebooks" / "stage4_final_data.zip"
+DEFAULT_ZIP_URL = "https://drive.google.com/file/d/15D3M7MmKQGSgnkb8n3JtYa2JAV18xuq4/view?usp=sharing"  # архив stage4_final_data.zip на Google Drive (доступ по ссылке)
 
 DATA_FILES = {
-    ROOT_DIR / "knowledge_base" / "rag_a" / "records.jsonl": "records_rag_a.jsonl",
+    ROOT_DIR / "knowledge_base" / "rag_a_v3" / "records.jsonl": "records_rag_a.jsonl",
+    ROOT_DIR / "knowledge_base" / "rag_a_v3" / "keywords.csv": "keywords_rag_a.csv",
     ROOT_DIR / "knowledge_base" / "rag_b" / "records.jsonl": "records_rag_b1.jsonl",
     ROOT_DIR / "knowledge_base" / "rag_b2" / "records.jsonl": "records_rag_b2.jsonl",
 }
 
 CORE_PATHS_IN_MODULE = '''PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_RECORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a" / "records.jsonl"
+DEFAULT_RECORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a_v3" / "records.jsonl"
+DEFAULT_KEYWORDS_PATH = PROJECT_ROOT / "knowledge_base" / "rag_a_v3" / "keywords.csv"
 DEFAULT_PROMPTS_DIR = PROJECT_ROOT / "prompts"
-DEFAULT_INDEX_DIR = PROJECT_ROOT / "rag" / "index_rag_a"'''
+DEFAULT_INDEX_DIR = PROJECT_ROOT / "rag" / "index_rag_a_v3"'''
 
 CORE_PATHS_IN_NOTEBOOK = '''DATA_ZIP_URL = "{zip_url}"  # общедоступная ссылка Google Drive на архив с данными
-COLAB_DATA_DIR = Path("/content/stage3_prototype")
+COLAB_DATA_DIR = Path("/content/stage4_final")
 
 
 def download_data(zip_url: str = DATA_ZIP_URL, target_dir: Path = COLAB_DATA_DIR) -> Path:
@@ -61,11 +65,11 @@ def download_data(zip_url: str = DATA_ZIP_URL, target_dir: Path = COLAB_DATA_DIR
     if (target_dir / "records_rag_a.jsonl").exists():
         return target_dir
     if not zip_url:
-        raise ValueError("Не задана ссылка DATA_ZIP_URL на архив stage3_prototype_data.zip")
+        raise ValueError("Не задана ссылка DATA_ZIP_URL на архив stage4_final_data.zip")
     import gdown  # установлен в Google Colab; скачивает файлы Google Drive по ссылке «доступ по ссылке»
 
     target_dir.mkdir(parents=True, exist_ok=True)
-    archive = target_dir.parent / "stage3_prototype_data.zip"
+    archive = target_dir.parent / "stage4_final_data.zip"
     if not gdown.download(zip_url, str(archive), quiet=True, fuzzy=True):
         raise RuntimeError(f"Не удалось скачать архив: {{zip_url}}. Проверьте, что у файла включён доступ по ссылке.")
     with zipfile.ZipFile(archive) as zip_file:
@@ -85,18 +89,33 @@ def data_dir_for_environment(zip_url: str = DATA_ZIP_URL, colab_dir: Path = COLA
 DATA_DIR = data_dir_for_environment()  # папка, в которой лежат базы знаний и промпты
 print(f"Папка с файлами ноутбука: {{DATA_DIR.resolve()}}")
 DEFAULT_RECORDS_PATH = DATA_DIR / "records_rag_a.jsonl"
+DEFAULT_KEYWORDS_PATH = DATA_DIR / "keywords_rag_a.csv"
 DEFAULT_PROMPTS_DIR = DATA_DIR / "prompts"
 DEFAULT_INDEX_DIR = DATA_DIR / "index" / "rag_a"'''
 
-INTRO_MD = """# Прототип AI-ассистента персонального сайта (этап 3)
+INTRO_MD = """# AI-ассистент персонального сайта — финальная версия (этап 4)
 
 **Тема:** персональный сайт с AI-ассистентом для представления профессиональных компетенций.
 **Автор:** Андрис Янчевскис.
 
 Ассистент отвечает на вопросы посетителей (рекрутеров, работодателей, заказчиков) об опыте Андриса
 только по внешней базе знаний (RAG). Исследовательский вопрос: даёт ли **редактируемая база знаний (RAG A)**
-более точные и честные ответы, чем база, полученная **парсингом страниц сайта (RAG B1)** или
+более полные и честные ответы, чем база, полученная **парсингом страниц сайта (RAG B1)** или
 **страниц и PDF-файлов сайта (RAG B2)**. Код ассистента одинаков для всех баз, меняется только база.
+
+## Лучший вариант по итогам экспериментов (настройки по умолчанию)
+
+| Параметр | Значение |
+|---|---|
+| База знаний | RAG A, версия v3 (`records_rag_a.jsonl`) + таблица ключевых слов (`keywords_rag_a.csv`) |
+| Промпты | `intent_v2` (намерение и поисковый запрос), `answer_v4` (ответ) |
+| Эмбеддинги | `text-embedding-3-small`; имя владельца убрано из текста для эмбеддингов |
+| Фрагменты | до 800 символов, перекрытие 0 |
+| Поиск | FAISS `IndexFlatIP`, top_k = 5, порог сходства 0.25 |
+| LLM | `gpt-4o-mini`, температура обоих вызовов 0 |
+
+Результаты (средняя оценка 0–2): на 15 вопросах этапа 3 — 1.93–2.00; на 26 новых вопросах — 1.52
+против 1.00 (B1) и 1.15 (B2). Подробности — в файле с экспериментами.
 
 ## Схема работы
 
@@ -105,7 +124,9 @@ INTRO_MD = """# Прототип AI-ассистента персонально�
   │
   ▼
 [LLM-вызов 1] detect_intent ──► намерение + поисковый запрос
-  │                              (off_topic → вежливый отказ без поиска)
+  │                              off_topic → проверка таблицы ключевых слов:
+  │                              слово из таблицы есть → вопрос обрабатывается по базе,
+  │                              нет → вежливый отказ без поиска
   ▼
 [RAG] embed_texts + search ──► top_k фрагментов базы знаний (FAISS)
   │                              (нет фрагментов выше порога → отказ)
@@ -116,13 +137,14 @@ INTRO_MD = """# Прототип AI-ассистента персонально�
 
 ## Как запустить
 
-1. Откройте ноутбук в Google Colab. Базы знаний и промпты скачиваются автоматически по ссылке
-   на архив `stage3_prototype_data.zip` и распаковываются в `/content/stage3_prototype`.
-   В локальном Jupyter запустите ноутбук из папки, где лежат файлы `records_*.jsonl` и папка `prompts`.
+1. Откройте ноутбук в Google Colab. Базы знаний, таблица ключевых слов и промпты скачиваются
+   автоматически по ссылке на архив `stage4_final_data.zip` и распаковываются в `/content/stage4_final`.
+   В локальном Jupyter запустите ноутбук из папки, где лежат файлы `records_*.jsonl`,
+   `keywords_rag_a.csv` и папка `prompts`.
 2. В Google Colab добавьте секрет `OPENAI_API_KEY` (значок ключа на левой панели) и разрешите
    ноутбуку доступ к нему. В локальном Jupyter задайте переменную окружения `OPENAI_API_KEY`.
 3. Выполните ячейки по порядку. В последней ячейке запускается `main()`: введите вопрос и базу
-   знаний — `A`, `B1`, `B2` или `ALL` для сравнения.
+   знаний — `A` (по умолчанию), `B1`, `B2` или `ALL` для сравнения. Пустой вопрос завершает работу.
 4. Индексы FAISS строятся при первом запуске и сохраняются в папку `index/`; повторно эмбеддинги
    не создаются.
 
@@ -139,15 +161,16 @@ SETUP_CODE = """%pip install -q faiss-cpu openai pydantic numpy gdown"""
 
 CELL_NOTES = {
     "imports": "## 2. Импорт библиотек и пути к файлам\n\nВсе пути — параметры функций со значениями по умолчанию относительно папки ноутбука.",
-    "Настройки и структуры данных": "## 3. Настройки и структуры данных\n\n`AssistantConfig` собирает все параметры, которые меняются в экспериментах. Pydantic-модели проверяют ответы LLM на каждом шаге.",
+    "Настройки и структуры данных": "## 3. Настройки и структуры данных\n\n`AssistantConfig` собирает все параметры, которые меняются в экспериментах; значения по умолчанию — лучший вариант этапа 4, `STAGE3_CONFIG` — настройки прототипа этапа 3. Pydantic-модели проверяют ответы LLM на каждом шаге.",
     "1. База знаний": "## 4. База знаний и чанкинг\n\nЗагрузка записей (для RAG A — только `verified` и `public`), деление текста на фрагменты с перекрытием.",
-    "2. Эмбеддинги и векторный индекс FAISS": "## 5. Эмбеддинги и векторный индекс FAISS\n\nЭмбеддинги OpenAI, L2-нормализация и индекс `IndexFlatIP` (точный поиск по косинусному сходству).",
-    "3. Промпты и два обращения к LLM": "## 6. Промпты и два обращения к LLM\n\nПромпт 1 определяет намерение и формирует поисковый запрос, промпт 2 отвечает только по найденному контексту. Тексты промптов лежат в папке `prompts/` и имеют версии.",
+    "2. Эмбеддинги и векторный индекс FAISS": "## 5. Эмбеддинги и векторный индекс FAISS\n\nЭмбеддинги OpenAI (из текста для эмбеддингов убирается имя владельца — `embedding_text`), L2-нормализация и индекс `IndexFlatIP` (точный поиск по косинусному сходству).",
+    "3. Промпты и два обращения к LLM": "## 6. Промпты и два обращения к LLM\n\nПромпт 1 определяет намерение и формирует поисковый запрос, промпт 2 отвечает только по найденному контексту. Тексты промптов лежат в папке `prompts/` и имеют версии. `load_keywords` и `find_kb_term` — таблица ключевых слов базы A.",
     "4. Главная функция": "## 7. Обработка одного вопроса\n\n`run_assistant` выполняет шаги по схеме и возвращает ответ, статус, источники и журнал шагов.",
 }
 
 NOTEBOOK_FUNCTIONS = '''CORPORA = {
-    "A": {"file": "records_rag_a.jsonl", "require_verified": True, "title": "RAG A — редактируемая база знаний"},
+    "A": {"file": "records_rag_a.jsonl", "require_verified": True, "keywords": "keywords_rag_a.csv",
+          "title": "RAG A — редактируемая база знаний"},
     "B1": {"file": "records_rag_b1.jsonl", "require_verified": False, "title": "RAG B1 — парсинг страниц сайта"},
     "B2": {"file": "records_rag_b2.jsonl", "require_verified": False, "title": "RAG B2 — страницы и PDF сайта"},
 }
@@ -156,6 +179,8 @@ NOTEBOOK_FUNCTIONS = '''CORPORA = {
 def index_dir_for(corpus: str, config: AssistantConfig, data_dir: str | Path = DATA_DIR) -> Path:
     """Папка индекса: своя для каждой базы, модели эмбеддингов и параметров чанкинга."""
     name = f"{corpus}_{config.embedding_model}_{config.chunk_size}_{config.chunk_overlap}"
+    if config.strip_owner_name:
+        name += "_noname"
     return Path(data_dir) / "index" / name
 
 
@@ -175,12 +200,17 @@ def get_corpus_index(corpus: str, client: Any, config: AssistantConfig, corpora:
 
 def ask(question: str, corpus_names: list[str], client: Any, config: AssistantConfig, prompts: dict[str, Any],
         corpora: dict = CORPORA, data_dir: str | Path = DATA_DIR) -> dict[str, AssistantResponse | str]:
-    """Задаёт один вопрос ассистенту с каждой из выбранных баз знаний."""
+    """Задаёт один вопрос ассистенту с каждой из выбранных баз знаний.
+
+    Таблица ключевых слов есть только у редактируемой базы A: её ведёт автор базы.
+    """
     results: dict[str, AssistantResponse | str] = {}
     for corpus in corpus_names:
+        settings = corpora[corpus]
+        keywords = load_keywords(Path(data_dir) / settings["keywords"]) if settings.get("keywords") else None
         try:
             index, chunks = get_corpus_index(corpus, client, config, corpora, data_dir)
-            results[corpus] = run_assistant(question, client, index, chunks, config, prompts)
+            results[corpus] = run_assistant(question, client, index, chunks, config, prompts, keywords)
         except AssistantError as exc:
             results[corpus] = f"Ошибка: {exc}"
     return results
@@ -192,6 +222,9 @@ def format_result(corpus: str, result: AssistantResponse | str, corpora: dict = 
     if isinstance(result, str):
         return "\\n".join(lines + [result])
     lines.append(f"Статус: {result.status}")
+    if result.log.get("kb_term_override"):
+        override = result.log["kb_term_override"]
+        lines.append(f"(вопрос обработан по базе: ключевое слово «{override['keyword']}», категория {override['category']})")
     lines.append(result.answer)
     hits = result.log.get("hits", [])
     if hits:
@@ -238,7 +271,7 @@ def main(data_dir: str | Path = DATA_DIR, config: AssistantConfig | None = None,
         question = input("\\nВопрос: ").strip()
         if not question:
             break
-        choice = (input(f"База знаний ({', '.join(corpora)} или ALL) [ALL]: ").strip().upper() or "ALL")
+        choice = (input(f"База знаний ({', '.join(corpora)} или ALL) [A]: ").strip().upper() or "A")
         names = list(corpora) if choice == "ALL" else [choice]
         if any(name not in corpora for name in names):
             print(f"Неизвестная база: {choice}")
@@ -250,20 +283,24 @@ def main(data_dir: str | Path = DATA_DIR, config: AssistantConfig | None = None,
 MAIN_MD = """## 8. Функции ноутбука и тестовый запуск
 
 `ask` задаёт вопрос с выбранными базами, `main` — главная функция: берёт ключ API из секретов Colab
-(`OPENAI_API_KEY`), запрашивает вопрос и базу знаний и выводит ответы. Для сравнения баз введите `ALL`."""
+(`OPENAI_API_KEY`), запрашивает вопрос и базу знаний и выводит ответы. По умолчанию используется
+редактируемая база A; для сравнения баз введите `ALL`. Примеры вопросов: «Какое высшее образование
+у Андриса?», «Правда ли, что candlemania — интернет-магазин?», «Ищем Python-разработчика с FastAPI
+и PostgreSQL. Подходит ли Андрис?»."""
 
-README = """# Прототип AI-ассистента (этап 3)
+README = """# AI-ассистент персонального сайта — финальная версия (этап 4)
 
 Папка создана скриптом `scripts/build_notebook.py` из модуля `app/rag/assistant_core.py`.
 Не редактируйте ноутбук вручную: измените модуль и пересоберите папку.
 
-- `assistant_stage3.ipynb` — ноутбук-прототип; последняя ячейка запускает `main()`.
-- `records_rag_a.jsonl` — редактируемая база знаний (RAG A).
+- `assistant_stage4.ipynb` — финальный ноутбук; последняя ячейка запускает `main()`.
+- `records_rag_a.jsonl` — редактируемая база знаний (RAG A, версия v3).
+- `keywords_rag_a.csv` — таблица ключевых слов базы A (keyword, category, comment).
 - `records_rag_b1.jsonl` — база, полученная парсингом страниц сайта (RAG B1).
 - `records_rag_b2.jsonl` — страницы сайта и PDF-файлы сайта (RAG B2).
-- `prompts/ru/` — промпты двух вызовов LLM и служебные сообщения.
+- `prompts/ru/` — промпты всех версий (v1–v4) и служебные сообщения.
 
-В Google Colab базы знаний и промпты скачиваются по ссылке на архив `stage3_prototype_data.zip`
+В Google Colab базы знаний и промпты скачиваются по ссылке на архив `stage4_final_data.zip`
 (создаётся тем же скриптом в папке `notebooks/`).
 
 Ключ OpenAI API берётся из секрета Google Colab `OPENAI_API_KEY` (вне Colab — из переменной окружения
@@ -364,6 +401,6 @@ def build_notebook(output_dir: Path = OUTPUT_DIR, zip_url: str = DEFAULT_ZIP_URL
 if __name__ == "__main__":
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    cli = argparse.ArgumentParser(description="Сборка ноутбука этапа 3")
-    cli.add_argument("--zip-url", default=DEFAULT_ZIP_URL, help="ссылка Google Drive на stage3_prototype_data.zip")
+    cli = argparse.ArgumentParser(description="Сборка финального ноутбука этапа 4")
+    cli.add_argument("--zip-url", default=DEFAULT_ZIP_URL, help="ссылка Google Drive на stage4_final_data.zip")
     build_notebook(zip_url=cli.parse_args().zip_url)

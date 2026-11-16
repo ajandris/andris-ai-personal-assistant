@@ -74,7 +74,7 @@ def test_download_data_unpacks_archive(tmp_path, monkeypatch):
     for name in ("records_rag_a.jsonl", "records_rag_b1.jsonl"):
         (data_dir / name).write_text("{}", encoding="utf-8")
     (data_dir / "prompts" / "ru" / "messages.json").write_text("{}", encoding="utf-8")
-    archive = build_notebook.build_data_zip(data_dir, tmp_path / "stage3_prototype_data.zip")
+    archive = build_notebook.build_data_zip(data_dir, tmp_path / "stage4_final_data.zip")
 
     def fake_download(url, output, quiet, fuzzy):
         Path(output).write_bytes(archive.read_bytes())
@@ -82,7 +82,7 @@ def test_download_data_unpacks_archive(tmp_path, monkeypatch):
 
     monkeypatch.setitem(sys.modules, "gdown", types.SimpleNamespace(download=fake_download))
     _, namespace = notebook_helpers()
-    target = tmp_path / "content" / "stage3_prototype"
+    target = tmp_path / "content" / "stage4_final"
     result = namespace["download_data"]("https://drive.google.com/file/d/abc/view", target)
     assert result == target
     assert (target / "records_rag_a.jsonl").exists()
@@ -94,3 +94,15 @@ def test_download_data_requires_url(tmp_path):
     import pytest
     with pytest.raises(ValueError):
         namespace["download_data"]("", tmp_path / "empty")
+
+
+def test_stage4_notebook_uses_kb_v3_keywords_and_best_config():
+    cells = code_of(notebook_cells())
+    assert 'DEFAULT_KEYWORDS_PATH = DATA_DIR / "keywords_rag_a.csv"' in cells[1]
+    functions_cell = cells[-2]
+    assert '"keywords": "keywords_rag_a.csv"' in functions_cell
+    assert "run_assistant(question, client, index, chunks, config, prompts, keywords)" in functions_cell
+    assert "config = config or AssistantConfig()" in functions_cell  # лучший вариант — значения по умолчанию
+    sources = {Path(k).parent.name + "/" + Path(k).name: v for k, v in build_notebook.DATA_FILES.items()}
+    assert sources["rag_a_v3/records.jsonl"] == "records_rag_a.jsonl"
+    assert sources["rag_a_v3/keywords.csv"] == "keywords_rag_a.csv"

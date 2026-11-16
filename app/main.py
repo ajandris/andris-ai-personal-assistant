@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.api.routes import router
 from app.core.config import get_settings
+from app.rag.assistant_core import DEFAULT_RECORDS_PATH, load_records
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
@@ -94,10 +95,11 @@ async def portfolio_page(request: Request):
 async def ai_assistant_page(request: Request):
     """Отображение отдельной страницы AI-ассистента."""
     current_settings = get_settings()
+    kb_records = len(load_records(DEFAULT_RECORDS_PATH, site="ru"))  # записей базы, доступных ассистенту
     return templates.TemplateResponse(
         request=request,
         name="ai_assistant.html",
-        context={"settings": current_settings, "active_page": "ai_assistant"},
+        context={"settings": current_settings, "active_page": "ai_assistant", "kb_records": kb_records},
     )
 
 
